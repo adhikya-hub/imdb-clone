@@ -30,7 +30,7 @@ SECRET_KEY = "django-insecure-rwtl#a&koa)j!olg@_u$ud+^rlmios=rg0u$)ni=xvh09(su!7
 DEBUG = True
 
 
-ALLOWED_HOSTS = ["mysite-i024.onrender.com"]
+ALLOWED_HOSTS = ["imdb-clone-24p9.onrender.com"]
 
 # Application definition
 
