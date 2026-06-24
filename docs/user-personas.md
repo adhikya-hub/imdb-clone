@@ -2,7 +2,7 @@
 
 ### User Persona 1
 
-Name: User1
+Name: Laharika
 
 Age: 27
 
@@ -24,7 +24,7 @@ Pain Points:
 
 ### User Persona 2
 
-Name: User2
+Name: Adhikya
 
 Age: 23
 
