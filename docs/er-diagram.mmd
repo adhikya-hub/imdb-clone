@@ -1,0 +1,159 @@
+erDiagram
+
+    USER {
+        int id PK
+        string username
+        string email
+        string password
+        string bio
+        boolean is_imdb_pro
+        datetime created_at
+    }
+
+    MOVIE {
+        int id PK
+        int tmdb_id
+        string title
+        string original_title
+        text overview
+        string tagline
+        date release_date
+        int runtime
+        string status
+        boolean adult
+        string imdb_id
+        string homepage
+        string original_language
+        float popularity
+        float vote_average
+        int vote_count
+        bigint budget
+        bigint revenue
+        string poster_path
+        string backdrop_path
+        json belongs_to_collection
+        json origin_country
+        json production_companies
+        json production_countries
+        json spoken_languages
+        json videos
+        datetime created_at
+    }
+
+    GENRE {
+        int id PK
+        int tmdb_id
+        string name
+    }
+
+    PERSON {
+        int id PK
+        int tmdb_person_id
+        string name
+        text biography
+        date birthday
+        date deathday
+        int gender
+        string homepage
+        string imdb_id
+        string known_for_department
+        string place_of_birth
+        float popularity
+        string profile_path
+        json also_known_as
+    }
+
+    CREDIT {
+        int id PK
+        int movie_id FK
+        int person_id FK
+        string role_type
+        string character_name
+    }
+
+    REVIEW {
+        int id PK
+        int user_id FK
+        int movie_id FK
+        int rating
+        text content
+        datetime created_at
+        datetime updated_at
+    }
+
+    COMMENT {
+        int id PK
+        int user_id FK
+        int review_id FK
+        text content
+        datetime created_at
+    }
+
+    REVIEW_LIKE {
+        int id PK
+        int user_id FK
+        int review_id FK
+        datetime created_at
+    }
+
+    WATCHLIST {
+        int id PK
+        int user_id FK
+        int movie_id FK
+        datetime added_at
+    }
+
+    WATCHED_MOVIE {
+        int id PK
+        int user_id FK
+        int movie_id FK
+        datetime watched_at
+    }
+
+    MOVIE_LIST {
+        int id PK
+        int user_id FK
+        string title
+        text description
+        boolean is_public
+        datetime created_at
+    }
+
+    MOVIE_LIST_ITEM {
+        int id PK
+        int movie_list_id FK
+        int movie_id FK
+    }
+
+    PERSON_PROFILE {
+        int id PK
+        int user_id FK
+        int person_id FK
+    }
+
+    USER ||--o{ REVIEW : writes
+    MOVIE ||--o{ REVIEW : receives
+
+    USER ||--o{ COMMENT : writes
+    REVIEW ||--o{ COMMENT : has
+
+    USER ||--o{ REVIEW_LIKE : likes
+    REVIEW ||--o{ REVIEW_LIKE : receives
+
+    USER ||--o{ WATCHLIST : saves
+    MOVIE ||--o{ WATCHLIST : saved
+
+    USER ||--o{ WATCHED_MOVIE : watches
+    MOVIE ||--o{ WATCHED_MOVIE : watched
+
+    USER ||--o{ MOVIE_LIST : creates
+    MOVIE_LIST ||--o{ MOVIE_LIST_ITEM : contains
+    MOVIE ||--o{ MOVIE_LIST_ITEM : appears_in
+
+    MOVIE }o--o{ GENRE : categorized_as
+
+    MOVIE ||--o{ CREDIT : has
+    PERSON ||--o{ CREDIT : credited_in
+
+    USER ||--|| PERSON_PROFILE : owns
+    PERSON ||--|| PERSON_PROFILE : linked_to

@@ -44,3 +44,28 @@ Pain Points:
 
 * Find her next favourite movie
 * Smooth navigation
+
+---
+
+### User Persona 3
+
+User Persona: Keith Walker
+
+Name: Keith Walker
+
+Age: 45
+
+Occupation: Independent Actor / Filmmaker
+
+Background:
+Keith works on independent film projects and actively maintains his professional filmography online. He needs showcase his acting work.
+
+Goals:
+
+* Ensure his acting credits are displayed correctly.
+* Keep film and role information up to date.
+
+Pain Points:
+
+* Credits are sometimes categorized incorrectly.
+* Changes through contributions may take time to be approved.
