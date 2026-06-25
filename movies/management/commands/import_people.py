@@ -1,7 +1,9 @@
+import time
+
 from django.core.management.base import BaseCommand
 
 from movies.models import Person
-from movies.services import get_person_details
+from movies.services import IMAGE_BASE_URL, get_person_details
 
 
 class Command(BaseCommand):
@@ -26,11 +28,16 @@ class Command(BaseCommand):
                     "known_for_department": details["known_for_department"],
                     "place_of_birth": details.get("place_of_birth") or "",
                     "popularity": details["popularity"],
-                    "profile_path": details.get("profile_path") or "",
+                    "profile_path": (
+                        f"{IMAGE_BASE_URL}{details['profile_path']}"
+                        if details["profile_path"]
+                        else ""
+                    ),
                     "also_known_as": details.get("also_known_as") or [],
                 },
             )
 
             self.stdout.write(f"Imported: {person.name}")
+            time.sleep(0.2)
 
         self.stdout.write(self.style.SUCCESS("People imported successfully."))

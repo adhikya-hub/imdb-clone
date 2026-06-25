@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ movie.title }}
+{% endblock %}
+
+{% block content %}
+
+<div class="row mb-5">
+
+    <div class="col-md-3">
+
+        <img
+            src="{{ movie.poster_path }}"
+            class="img-fluid rounded shadow"
+            alt="{{ movie.title }}"
+        >
+
+    </div>
+
+    <div class="col-md-9">
+
+        <h1>{{ movie.title }}</h1>
+
+        {% if movie.tagline %}
+            <p class="text-muted fst-italic">
+                {{ movie.tagline }}
+            </p>
+        {% endif %}
+
+        <div class="mb-3">
+
+            <span class="badge bg-warning text-dark">
+                ⭐ {{ movie.vote_average }}
+            </span>
+
+            <span class="badge bg-secondary">
+                {{ movie.vote_count }} votes
+            </span>
+
+        </div>
+
+        <p>{{ movie.overview }}</p>
+
+        <hr>
+
+        <div class="row">
+
+            <div class="col-md-6">
+
+                <p>
+                    <strong>Release Date:</strong>
+                    {{ movie.release_date }}
+                </p>
+
+                <p>
+                    <strong>Runtime:</strong>
+                    {{ movie.runtime }} min
+                </p>
+
+                <p>
+                    <strong>Status:</strong>
+                    {{ movie.status }}
+                </p>
+
+                <p>
+                    <strong>Language:</strong>
+                    {{ movie.original_language|upper }}
+                </p>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <p>
+                    <strong>Budget:</strong>
+                    ${{ movie.budget }}
+                </p>
+
+                <p>
+                    <strong>Revenue:</strong>
+                    ${{ movie.revenue }}
+                </p>
+
+                <p>
+                    <strong>Popularity:</strong>
+                    {{ movie.popularity }}
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+    </div>
+
+</div>
+
+<hr>
+
+
+
+{% endblock %}

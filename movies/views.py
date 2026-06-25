@@ -1,25 +1,26 @@
-import requests
-from django.conf import settings
-from django.http import HttpResponse
-from django.shortcuts import render
-from django.template import response
+from django.views.generic import DetailView, ListView
+
+from .models import Movie
 
 
-def home(request):
-    url = f"https://api.themoviedb.org/3/movie/popular?api_key={settings.TMDB_API_KEY}"
-    response = requests.get(url)
-    movies = response.json()
-    return render(request, "movies/home.html", {"movies": movies["results"]})
+class HomeView(ListView):
+    model = Movie
+    template_name = "movies/home.html"
+    context_object_name = "movies"
+    ordering = ["-popularity"]
+    paginate_by = 20
 
 
-# import requests
-# from django.conf import settings
-# from django.http import HttpResponse
+class MovieDetailView(DetailView):
+    model = Movie
+    template_name = "movies/movie_detail.html"
+    context_object_name = "movie"
 
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
 
-# def home(request):
-#     url = f"https://api.themoviedb.org/3/movie/popular?api_key={settings.TMDB_API_KEY}"
+    #     context["cast"] = self.object.credits.filter(job="Actor").order_by("cast_order")
 
-#     response = requests.get(url)
+    #     context["crew"] = self.object.credits.exclude(job="Actor")
 
-#     return HttpResponse(f"Status: {response.status_code}<br><br>{response.text}")
+    #     return context

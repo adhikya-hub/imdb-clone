@@ -1,40 +1,51 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>IMDb Clone</title>
-    <style>
+{% extends "base.html" %}
 
+{% block title %}
+Home
+{% endblock %}
 
-        .movies {
-            display: grid;
-            grid-template-columns: repeat(2,1fr);
-            gap: 20px;
-        }
+{% block content %}
 
-    </style>
-</head>
-<body>
+<h1 class="mb-4">Popular Movies</h1>
 
-    <h1>Popular Movies</h1>
+<div class="row">
 
-    <div class="movies">
-        {% for movie in movies %}
-        <div class="movie-card">
+    {% for movie in movies %}
 
-            <img
-                src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}"
-                alt="{{ movie.title }}"
-            >
+    <div class="col-md-3 mb-4">
 
-            <div class="movie-info">
-                <h3>{{ movie.title }}</h3>
-                <p>⭐ {{ movie.vote_average }}</p>
-                <p>{{ movie.release_date }}</p>
+        <a
+            href="{% url 'movie_detail' movie.id %}"
+            class="text-decoration-none text-dark"
+        >
+
+            <div class="card h-100 shadow">
+
+                <img
+                    src="{{ movie.poster_path }}"
+                    class="card-img-top"
+                    alt="{{ movie.title }}"
+                >
+
+                <div class="card-body">
+
+                    <h5>{{ movie.title }}</h5>
+
+                    <p>⭐ {{ movie.vote_average }}</p>
+
+                    <p>{{ movie.release_date|date:"Y" }}</p>
+
+                </div>
+
             </div>
 
-        </div>
-        {% endfor %}
+        </a>
+
     </div>
 
-</body>
-</html>
+    {% endfor %}
+
+
+</div>
+
+{% endblock %}

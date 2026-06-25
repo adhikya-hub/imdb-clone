@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 
 from movies.models import Credit, Genre, Movie, Person
 from movies.services import (
+    IMAGE_BASE_URL,
     get_movie_credits,
     get_movie_details,
     get_person_details,
@@ -36,8 +37,16 @@ class Command(BaseCommand):
                     "vote_count": details["vote_count"],
                     "budget": details["budget"],
                     "revenue": details["revenue"],
-                    "poster_path": details["poster_path"],
-                    "backdrop_path": details["backdrop_path"],
+                    "poster_path": (
+                        f"{IMAGE_BASE_URL}{details['poster_path']}"
+                        if details["poster_path"]
+                        else ""
+                    ),
+                    "backdrop_path": (
+                        f"{IMAGE_BASE_URL}{details['backdrop_path']}"
+                        if details["backdrop_path"]
+                        else ""
+                    ),
                     "belongs_to_collection": details["belongs_to_collection"],
                     "origin_country": details["origin_country"],
                     "production_companies": details["production_companies"],
@@ -65,7 +74,11 @@ class Command(BaseCommand):
                         "gender": actor["gender"],
                         "known_for_department": actor["known_for_department"],
                         "popularity": actor["popularity"],
-                        "profile_path": actor["profile_path"],
+                        "profile_path": (
+                            f"{IMAGE_BASE_URL}{actor['profile_path']}"
+                            if actor["profile_path"]
+                            else ""
+                        ),
                     },
                 )
 
@@ -88,7 +101,11 @@ class Command(BaseCommand):
                         "gender": crew_member["gender"],
                         "known_for_department": crew_member["known_for_department"],
                         "popularity": crew_member["popularity"],
-                        "profile_path": crew_member["profile_path"],
+                        "profile_path": (
+                            f"{IMAGE_BASE_URL}{crew_member['profile_path']}"
+                            if crew_member["profile_path"]
+                            else ""
+                        ),
                     },
                 )
 
