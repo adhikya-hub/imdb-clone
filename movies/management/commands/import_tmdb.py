@@ -1,3 +1,5 @@
+import time
+
 from django.core.management.base import BaseCommand
 
 from movies.models import Credit, Genre, Movie, Person
@@ -5,7 +7,7 @@ from movies.services import (
     IMAGE_BASE_URL,
     get_movie_credits,
     get_movie_details,
-    get_person_details,
+    get_movie_videos,
     get_popular_movies,
 )
 
@@ -54,6 +56,13 @@ class Command(BaseCommand):
                     "spoken_languages": details["spoken_languages"],
                 },
             )
+
+            videos = get_movie_videos(movie_obj.id)
+
+            movie_obj.videos = videos["results"]
+
+            movie_obj.save(update_fields=["videos"])
+
             for genre in details["genres"]:
                 genre_obj, _ = Genre.objects.get_or_create(
                     id=genre["id"],
@@ -120,3 +129,4 @@ class Command(BaseCommand):
                         "cast_order": None,
                     },
                 )
+            time.sleep(0.2)

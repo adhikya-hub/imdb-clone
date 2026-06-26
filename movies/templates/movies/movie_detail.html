@@ -19,6 +19,63 @@
     </div>
 
     <div class="col-md-9">
+        <h2>Videos</h2>
+
+        {% if featured_video %}
+
+        <!--<iframe
+            id="video-player"
+            width="100%"
+            height="500"
+            src="https://www.youtube.com/embed/{{ featured_video.key }}"
+            allowfullscreen>
+        </iframe>-->
+        <iframe
+            width="100%"
+            height="500"
+            src="https://www.youtube.com/embed/{{ featured_video.key }}"
+            title="{{ featured_video.name }}"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen>
+        </iframe>
+
+        {% endif %}
+
+        <h4 class="mt-4">Videos</h4>
+
+        <div class="row">
+
+            {% for video in videos %}
+
+            <div
+                class="col-md-3 mb-3 video-card"
+                data-key="{{ video.key }}"
+            >
+
+                <div class="card h-100">
+
+                    <img
+                        src="https://img.youtube.com/vi/{{ video.key }}/hqdefault.jpg"
+                        class="card-img-top"
+                        alt="{{ video.name }}"
+                    >
+
+                    <div class="card-body">
+
+                        <h6>{{ video.name }}</h6>
+
+                        <small>{{ video.type }}</small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
 
         <h1>{{ movie.title }}</h1>
 
@@ -99,6 +156,22 @@
 
 <hr>
 
+<script>
 
+const player = document.getElementById("video-player");
+
+document.querySelectorAll(".video-card").forEach(card => {
+
+    card.addEventListener("click", function () {
+
+        const key = this.dataset.key;
+
+        player.src = `https://www.youtube.com/embed/${key}?autoplay=1`;
+
+    });
+
+});
+
+</script>
 
 {% endblock %}
