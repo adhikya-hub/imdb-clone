@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ person.name }}
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+
+    <div class="col-md-3">
+
+        <img
+            src="{{ person.profile_path }}"
+            class="img-fluid rounded shadow"
+            alt="{{ person.name }}"
+        >
+
+    </div>
+
+    <div class="col-md-9">
+
+        <h1>{{ person.name }}</h1>
+
+        <p class="text-muted">
+            {{ person.known_for_department }}
+        </p>
+
+        <hr>
+
+        {% if person.biography %}
+
+        <h4>Biography</h4>
+
+        <p>
+            {{ person.biography }}
+        </p>
+
+        {% endif %}
+
+        <div class="row mt-4">
+
+            <div class="col-md-6">
+
+                <p>
+                    <strong>Birthday:</strong>
+                    {{ person.birthday }}
+                </p>
+
+                {% if person.deathday %}
+                <p>
+                    <strong>Died:</strong>
+                    {{ person.deathday }}
+                </p>
+                {% endif %}
+
+                <p>
+                    <strong>Place of Birth:</strong>
+                    {{ person.place_of_birth }}
+                </p>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <p>
+                    <strong>IMDb ID:</strong>
+                    {{ person.imdb_id }}
+                </p>
+
+                <p>
+                    <strong>Popularity:</strong>
+                    {{ person.popularity }}
+                </p>
+
+                {% if person.homepage %}
+                <p>
+                    <strong>Homepage:</strong>
+
+                    <a
+                        href="{{ person.homepage }}"
+                        target="_blank"
+                    >
+                        Visit
+                    </a>
+
+                </p>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        {% if person.also_known_as %}
+
+        <h4 class="mt-4">
+            Also Known As
+        </h4>
+
+        <ul>
+
+            {% for name in person.also_known_as %}
+
+            <li>{{ name }}</li>
+
+            {% endfor %}
+
+        </ul>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+<hr>
+
+<h2 class="mt-5">
+    Filmography
+</h2>
+
+<table class="table table-dark table-hover">
+
+    <thead>
+
+        <tr>
+
+            <th>Year</th>
+
+            <th>Movie</th>
+
+            <th>Role</th>
+
+            <th>Character</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+    {% for credit in filmography %}
+
+        <tr>
+
+            <td>
+
+                {{ credit.movie.release_date|date:"Y" }}
+
+            </td>
+
+            <td>
+
+                <a
+                    href="{% url 'movie_detail' credit.movie.id %}"
+                    class="text-decoration-none text-warning"
+                >
+
+                    {{ credit.movie.title }}
+
+                </a>
+
+            </td>
+
+            <td>
+
+                {{ credit.job }}
+
+            </td>
+
+            <td>
+
+                {{ credit.character_name }}
+
+            </td>
+
+        </tr>
+
+    {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% endblock %}

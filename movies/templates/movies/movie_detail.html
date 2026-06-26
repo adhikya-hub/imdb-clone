@@ -7,6 +7,7 @@
 {% block content %}
 
 <div class="row mb-5">
+    <h1>{{ movie.title }}</h1>
 
     <div class="col-md-3">
 
@@ -19,7 +20,7 @@
     </div>
 
     <div class="col-md-9">
-        <h2>Videos</h2>
+
 
         {% if featured_video %}
 
@@ -42,113 +43,6 @@
 
         {% endif %}
 
-        <h4 class="mt-4">Videos</h4>
-
-        <div class="row">
-
-            {% for video in videos %}
-
-            <div
-                class="col-md-3 mb-3 video-card"
-                data-key="{{ video.key }}"
-            >
-
-                <div class="card h-100">
-
-                    <img
-                        src="https://img.youtube.com/vi/{{ video.key }}/hqdefault.jpg"
-                        class="card-img-top"
-                        alt="{{ video.name }}"
-                    >
-
-                    <div class="card-body">
-
-                        <h6>{{ video.name }}</h6>
-
-                        <small>{{ video.type }}</small>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            {% endfor %}
-
-        </div>
-
-        <h1>{{ movie.title }}</h1>
-
-        {% if movie.tagline %}
-            <p class="text-muted fst-italic">
-                {{ movie.tagline }}
-            </p>
-        {% endif %}
-
-        <div class="mb-3">
-
-            <span class="badge bg-warning text-dark">
-                ⭐ {{ movie.vote_average }}
-            </span>
-
-            <span class="badge bg-secondary">
-                {{ movie.vote_count }} votes
-            </span>
-
-        </div>
-
-        <p>{{ movie.overview }}</p>
-
-        <hr>
-
-        <div class="row">
-
-            <div class="col-md-6">
-
-                <p>
-                    <strong>Release Date:</strong>
-                    {{ movie.release_date }}
-                </p>
-
-                <p>
-                    <strong>Runtime:</strong>
-                    {{ movie.runtime }} min
-                </p>
-
-                <p>
-                    <strong>Status:</strong>
-                    {{ movie.status }}
-                </p>
-
-                <p>
-                    <strong>Language:</strong>
-                    {{ movie.original_language|upper }}
-                </p>
-
-            </div>
-
-            <div class="col-md-6">
-
-                <p>
-                    <strong>Budget:</strong>
-                    ${{ movie.budget }}
-                </p>
-
-                <p>
-                    <strong>Revenue:</strong>
-                    ${{ movie.revenue }}
-                </p>
-
-                <p>
-                    <strong>Popularity:</strong>
-                    {{ movie.popularity }}
-                </p>
-
-            </div>
-
-        </div>
-
-
 
     </div>
 
@@ -156,22 +50,130 @@
 
 <hr>
 
-<script>
+<div class="row">
 
-const player = document.getElementById("video-player");
 
-document.querySelectorAll(".video-card").forEach(card => {
 
-    card.addEventListener("click", function () {
+    {% if movie.tagline %}
+        <p class="text-muted fst-italic">
+            {{ movie.tagline }}
+        </p>
+    {% endif %}
 
-        const key = this.dataset.key;
+    <div class="mb-3">
 
-        player.src = `https://www.youtube.com/embed/${key}?autoplay=1`;
+        <span class="badge bg-warning text-dark">
+            ⭐ {{ movie.vote_average }}
+        </span>
 
-    });
+        <span class="badge bg-secondary">
+            {{ movie.vote_count }} votes
+        </span>
 
-});
+    </div>
 
-</script>
+    <p>{{ movie.overview }}</p>
+
+
+    <div class="col-md-6">
+
+        <p>
+            <strong>Release Date:</strong>
+            {{ movie.release_date }}
+        </p>
+
+        <p>
+            <strong>Runtime:</strong>
+            {{ movie.runtime }} min
+        </p>
+
+        <p>
+            <strong>Status:</strong>
+            {{ movie.status }}
+        </p>
+
+        <p>
+            <strong>Language:</strong>
+            {{ movie.original_language|upper }}
+        </p>
+
+    </div>
+
+    <div class="col-md-6">
+
+        <p>
+            <strong>Budget:</strong>
+            ${{ movie.budget }}
+        </p>
+
+        <p>
+            <strong>Revenue:</strong>
+            ${{ movie.revenue }}
+        </p>
+
+        <p>
+            <strong>Popularity:</strong>
+            {{ movie.popularity }}
+        </p>
+
+    </div>
+
+</div>
+
+<hr>
+
+<h2 class="mt-5">Top Cast</h2>
+
+<div class="row">
+
+{% for credit in cast|slice:":12" %}
+
+<div class="col-md-2 mb-4">
+
+    <a href="{% url 'person_detail' credit.person.id %}">
+        <div class="card h-100">
+
+            <img
+                src="{{ credit.person.profile_path }}"
+                class="card-img-top"
+                alt="{{ credit.person.name }}"
+            >
+
+            <div class="card-body">
+
+                <h6>{{ credit.person.name }}</h6>
+
+                <small>{{ credit.character_name }}</small>
+
+            </div>
+
+        </div>
+
+    </a>
+
+
+
+</div>
+
+
+{% endfor %}
+
+</div>
+
+{% for credit in crew %}
+
+<p>
+    {{ credit.person.name }} -
+    {{ credit.job }} -
+    {{ credit.department }}
+</p>
+
+{% empty %}
+
+<p>No crew found.</p>
+
+{% endfor %}
+
+
 
 {% endblock %}

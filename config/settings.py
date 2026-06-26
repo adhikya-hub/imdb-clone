@@ -30,6 +30,8 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 TMDB_API_KEY = os.getenv("TMDB_API_KEY")
 TMDB_ACCESS_TOKEN = os.getenv("TMDB_ACCESS_TOKEN")
 
+AUTH_USER_MODEL = "accounts.User"
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -40,6 +42,7 @@ ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
     "movies",
+    "accounts",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
