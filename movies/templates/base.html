@@ -40,6 +40,54 @@
             </button>
         </form>
 
+        <div class="ms-auto d-flex align-items-center">
+
+            {% if user.is_authenticated %}
+
+                <span class="me-3">
+                    Hello, {{ user.username }}
+                </span>
+
+                <a
+                    href="#"
+                    class="btn btn-outline-warning me-2"
+                >
+                    Watchlist
+                </a>
+
+                <form method="post" action="{% url 'logout' %}" class="d-inline">
+
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="btn btn-warning"
+                    >
+                        Logout
+                    </button>
+
+                </form>
+
+            {% else %}
+
+                <a
+                    href="{% url 'login' %}"
+                    class="btn btn-outline-warning me-2"
+                >
+                    Sign In
+                </a>
+
+                <a
+                    href="{% url 'signup' %}"
+                    class="btn btn-warning"
+                >
+                    Create Account
+                </a>
+
+            {% endif %}
+
+        </div>
+
     </div>
 </nav>
 

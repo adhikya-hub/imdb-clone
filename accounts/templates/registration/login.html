@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}
+Sign In
+{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center mt-5">
+
+    <div class="col-md-5">
+
+        <h1 class="mb-4">
+            Sign In
+        </h1>
+
+        <a
+            href="{% url 'signup' %}"
+            class="btn btn-warning w-100 mb-3"
+        >
+            Create an Account
+        </a>
+
+        <div class="text-center my-3">
+
+            <hr>
+
+            <span class="bg-dark px-3">
+                OR
+            </span>
+
+        </div>
+
+        <a
+            href="{% url 'signin' %}"
+            class="btn btn-outline-light w-100"
+        >
+            Sign in to an Existing Account
+        </a>
+
+    </div>
+
+    <div class="col-md-5">
+
+        <h2>
+            It's better when you sign in
+        </h2>
+
+        <ul class="mt-4">
+
+            <li>Personalized recommendations</li>
+
+            <li>Create your Watchlist</li>
+
+            <li>Rate movies</li>
+
+            <li>Write reviews</li>
+
+            <li>Comment on reviews</li>
+
+            <li>Create custom movie lists</li>
+
+        </ul>
+
+    </div>
+
+</div>
+
+{% endblock %}

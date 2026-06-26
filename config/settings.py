@@ -32,6 +32,10 @@ TMDB_ACCESS_TOKEN = os.getenv("TMDB_ACCESS_TOKEN")
 
 AUTH_USER_MODEL = "accounts.User"
 
+LOGIN_REDIRECT_URL = "home"
+LOGOUT_REDIRECT_URL = "home"
+LOGIN_URL = "login"
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -43,6 +47,7 @@ ALLOWED_HOSTS = ["*"]
 INSTALLED_APPS = [
     "movies",
     "accounts",
+    "reviews",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
