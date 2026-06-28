@@ -2,6 +2,19 @@ body {
     background: #141414;
 }
 
+:root {
+    --bs-warning: #f5c518;
+    --bs-warning-rgb: 245, 197, 24;
+}
+
+.navbar {
+    height: 4rem;
+}
+
+.navbar-brand.logo {
+    font-size: 1.3rem;
+}
+
 .card {
     transition: 0.3s;
     border: none;

@@ -15,6 +15,7 @@
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
         rel="stylesheet"
     >
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{% static 'movies/style.css' %}">
 </head>
 
@@ -23,11 +24,11 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-black">
     <div class="container">
 
-        <a class="navbar-brand fw-bold text-warning" href="/">
-            IMDb Clone
+        <a class="navbar-brand badge bold text-bg-warning logo" href="/">
+            IMDb
         </a>
 
-        <form class="d-flex ms-auto" method="GET" action="">
+        <!--<form class="d-flex ms-auto" method="GET" action="">
             <input
                 class="form-control me-2"
                 type="search"
@@ -38,6 +39,19 @@
             <button class="btn btn-warning">
                 Search
             </button>
+        </form>-->
+        <form class="d-flex ms-auto w-50" method="GET" action="">
+            <div class="input-group">
+                <input
+                    type="search"
+                    class="form-control"
+                    name="q"
+                    placeholder="Search movies..."
+                >
+                <button class="btn btn-light border-start" type="submit">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
         </form>
 
         <div class="ms-auto d-flex align-items-center">
