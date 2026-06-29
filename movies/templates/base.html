@@ -61,29 +61,128 @@
 
             {% if user.is_authenticated %}
 
-                <span class="me-3">
-                    Hello, {{ user.username }}
-                </span>
-
                 <a
-                    href="#"
-                    class="btn btn-outline-warning me-2"
-                >
+                    href="{% url 'watchlist' %}"
+                    class="btn btn-outline-warning me-3">
+
+                    <i class="bi bi-bookmark-fill"></i>
+
                     Watchlist
+
                 </a>
 
-                <form method="post" action="{% url 'logout' %}" class="d-inline">
-
-                    {% csrf_token %}
+                <div class="dropdown">
 
                     <button
-                        type="submit"
-                        class="btn btn-warning"
-                    >
-                        Logout
+                        class="btn btn-dark dropdown-toggle"
+                        type="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+
+                        <i class="bi bi-person-circle"></i>
+
+                        {{ user.username }}
+
                     </button>
 
-                </form>
+                    <ul class="dropdown-menu dropdown-menu-end">
+
+                        <li>
+
+                            <a
+                                class="dropdown-item"
+                                href="#">
+
+                                <i class="bi bi-person me-2"></i>
+
+                                Your Profile
+
+                            </a>
+
+                        </li>
+
+                        <li>
+
+                            <a
+                                class="dropdown-item"
+                                href="{% url 'user_ratings' %}">
+
+                                <i class="bi bi-star me-2"></i>
+
+                                Your Ratings
+
+                            </a>
+
+                        </li>
+
+                        <li>
+
+                            <a
+                                class="dropdown-item"
+                                href="{% url 'user_reviews' %}">
+
+                                <i class="bi bi-chat-left-text me-2"></i>
+
+                                Your Reviews
+
+                            </a>
+
+                        </li>
+                        <li>
+
+                            <a
+                                class="dropdown-item"
+                                href="{% url 'watchlist' %}">
+
+                                <i class="bi bi-bookmark-fill me-2"></i>
+
+                                Your Watchlist
+
+                            </a>
+
+                        </li>
+
+                        <li>
+
+                            <a
+                                class="dropdown-item"
+                                href="{% url 'lists' %}">
+
+                                <i class="bi bi-collection me-2"></i>
+
+                                Your Lists
+
+                            </a>
+
+                        </li>
+
+                        <li><hr class="dropdown-divider"></li>
+
+                        <li>
+
+                            <form
+                                method="post"
+                                action="{% url 'logout' %}">
+
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="dropdown-item">
+
+                                    <i class="bi bi-box-arrow-right me-2"></i>
+
+                                    Logout
+
+                                </button>
+
+                            </form>
+
+                        </li>
+
+                    </ul>
+
+                </div>
 
             {% else %}
 

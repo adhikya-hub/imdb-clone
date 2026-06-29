@@ -14,18 +14,46 @@ Home
 
     <div class="col-md-3 mb-4">
 
-        <a
-            href="{% url 'movie_detail' movie.id %}"
-            class="text-decoration-none text-dark"
-        >
+        <div class="card h-100 shadow position-relative">
 
-            <div class="card h-100 shadow">
+            {% if user.is_authenticated %}
+
+            <form
+                method="post"
+                action="{% url 'toggle_watchlist' movie.id %}"
+                class="position-absolute top-0 end-0 m-2"
+                style="z-index:10;">
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="btn btn-dark rounded-circle">
+
+                    {% if movie.id in watchlist_ids %}
+
+                        <i class="bi bi-bookmark-fill text-warning"></i>
+
+                    {% else %}
+
+                        <i class="bi bi-bookmark text-white"></i>
+
+                    {% endif %}
+
+                </button>
+
+            </form>
+
+            {% endif %}
+
+            <a
+                href="{% url 'movie_detail' movie.id %}"
+                class="text-decoration-none text-dark">
 
                 <img
                     src="{{ movie.poster_path }}"
                     class="card-img-top"
-                    alt="{{ movie.title }}"
-                >
+                    alt="{{ movie.title }}">
 
                 <div class="card-body">
 
@@ -37,9 +65,9 @@ Home
 
                 </div>
 
-            </div>
+            </a>
 
-        </a>
+        </div>
 
     </div>
 

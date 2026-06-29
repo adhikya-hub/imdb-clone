@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import MovieRating
+from .models import MovieRating, Review
 
 
 class MovieRatingForm(forms.ModelForm):
@@ -16,3 +16,13 @@ class MovieRatingForm(forms.ModelForm):
                 },
             )
         }
+
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = [
+            "title",
+            "body",
+            "spoiler",
+        ]

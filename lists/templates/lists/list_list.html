@@ -1,0 +1,260 @@
+{% extends "base.html" %}
+
+{% block title %}
+Your Lists
+{% endblock %}
+
+{% block content %}
+
+<div class="bg-black rounded p-5 mb-5">
+
+    <div class="d-flex justify-content-between align-items-start">
+
+        <div>
+
+            <h1 class="display-3 fw-light mb-3">
+                Your Lists
+            </h1>
+
+            <h5 class="text-warning mb-2">
+                <i class="bi bi-person-circle"></i>
+                {{ request.user.username }}
+            </h5>
+
+            <p class="text-secondary">
+                Lists you've created.
+            </p>
+
+        </div>
+
+        <a
+            href="{% url 'create_list' %}"
+            class="btn btn-warning rounded-pill px-4 py-3">
+
+            <i class="bi bi-plus-lg"></i>
+
+            Create new list
+
+        </a>
+
+    </div>
+
+</div>
+
+<div class="row">
+
+    <div class="col-lg-8">
+
+        <h4 class="mb-4">
+
+            {{ lists|length }} List{{ lists|pluralize }}
+
+        </h4>
+
+        {% for list in lists %}
+
+        <div class="card shadow-sm mb-3">
+
+            <div class="card-body">
+
+                <div class="row align-items-center">
+
+                    <div class="col-2">
+
+                        {% with first=list.items.first %}
+
+                            {% if first %}
+
+                            <img
+                                src="{{ first.movie.poster_path }}"
+                                class="img-fluid rounded"
+                                style="height: 120px; width: 80px; object-fit: cover;">
+
+                            {% else %}
+
+                                <div
+                                    class="bg-secondary rounded d-flex justify-content-center align-items-center"
+                                    style="height:160px;">
+
+                                    <i class="bi bi-film fs-1 text-light"></i>
+
+                                </div>
+
+                            {% endif %}
+
+                        {% endwith %}
+
+                    </div>
+
+                    <div class="col">
+
+                        <a
+                            href="{% url 'list_detail' list.id %}"
+                            class="text-decoration-none text-dark">
+
+                            <h3 class="fw-bold">
+
+                                {{ list.name }}
+
+                            </h3>
+
+                        </a>
+
+                        <div class="text-secondary">
+
+                            {{ list.items.count }}
+                            title{{ list.items.count|pluralize }}
+
+                            •
+
+                            {% if list.is_public %}
+
+                                Public
+
+                            {% else %}
+
+                                Private
+
+                            {% endif %}
+
+                            •
+
+                            Modified
+
+                            {{ list.updated_at|date:"M d, Y" }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-auto">
+
+                        <div class="dropdown">
+
+                            <button
+                                class="btn btn-light"
+                                data-bs-toggle="dropdown">
+
+                                <i class="bi bi-three-dots-vertical"></i>
+
+                            </button>
+
+                            <ul class="dropdown-menu dropdown-menu-end">
+
+                                <li>
+
+                                    <a
+                                        class="dropdown-item"
+                                        href="{% url 'list_detail' list.id %}">
+
+                                        Open
+
+                                    </a>
+
+                                </li>
+
+                                <li>
+
+                                    <a
+                                        class="dropdown-item"
+                                        href="{% url 'edit_list' list.id %}">
+
+                                        Edit
+
+                                    </a>
+
+                                </li>
+
+                                <li>
+
+                                    <a
+                                        class="dropdown-item text-danger"
+                                        href="{% url 'delete_list' list.id %}">
+
+                                        Delete
+
+                                    </a>
+
+                                </li>
+
+                            </ul>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="text-center py-5">
+
+            <i class="bi bi-collection fs-1 text-secondary"></i>
+
+            <h3 class="mt-3">
+                No Lists Yet
+            </h3>
+
+            <a
+                href="{% url 'create_list' %}"
+                class="btn btn-warning mt-3">
+
+                Create Your First List
+
+            </a>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    <div class="col-lg-4">
+
+        <h3 class="mb-4">
+            More to Explore
+        </h3>
+
+        <div class="list-group shadow-sm">
+
+            <a
+                href="{% url 'watchlist' %}"
+                class="list-group-item list-group-item-action">
+
+                <strong>Your Watchlist</strong>
+
+                <br>
+
+                <small class="text-muted">
+                    {{ watchlist_count }} title{{ watchlist_count|pluralize }}
+                </small>
+
+            </a>
+
+            <a
+                href="{% url 'user_ratings' %}"
+                class="list-group-item list-group-item-action">
+
+                <strong>Your Ratings</strong>
+
+            </a>
+
+            <a
+                href="{% url 'user_reviews' %}"
+                class="list-group-item list-group-item-action">
+
+                <strong>Your Reviews</strong>
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

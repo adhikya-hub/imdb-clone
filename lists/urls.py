@@ -1,0 +1,66 @@
+from django.urls import path
+
+from .views import (
+    CreateListView,
+    DeleteListView,
+    ListDetailView,
+    RemoveListItemView,
+    ToggleWatchlistView,
+    UpdateListView,
+    UpdateMovieListsView,
+    UserListsView,
+    WatchlistView,
+)
+
+urlpatterns = [
+    path(
+        "watchlist/",
+        WatchlistView.as_view(),
+        name="watchlist",
+    ),
+    path(
+        "watchlist/toggle/<int:pk>/",
+        ToggleWatchlistView.as_view(),
+        name="toggle_watchlist",
+    ),
+    path(
+        "",
+        UserListsView.as_view(),
+        name="lists",
+    ),
+    path(
+        "create/",
+        CreateListView.as_view(),
+        name="create_list",
+    ),
+    path(
+        "<int:pk>/",
+        ListDetailView.as_view(),
+        name="list_detail",
+    ),
+    path(
+        "<int:list_id>/remove/<int:movie_id>/",
+        RemoveListItemView.as_view(),
+        name="remove_list_item",
+    ),
+    path(
+        "create/",
+        CreateListView.as_view(),
+        name="create_list",
+    ),
+    path(
+        "<int:pk>/edit/",
+        UpdateListView.as_view(),
+        name="edit_list",
+    ),
+    path(
+        "<int:pk>/delete/",
+        DeleteListView.as_view(),
+        name="delete_list",
+    ),
+    path(
+        "movie/<int:pk>/lists/",
+        UpdateMovieListsView.as_view(),
+        name="update_movie_lists",
+    ),
+]

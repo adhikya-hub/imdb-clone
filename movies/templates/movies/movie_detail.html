@@ -233,6 +233,404 @@
 
 <hr>
 
+
+<div class="text-center">
+
+    <small class="text-uppercase text-secondary fw-bold">
+        Watchlist
+    </small>
+
+    {% if user.is_authenticated %}
+
+    <form
+        method="post"
+        action="{% url 'toggle_watchlist' movie.id %}">
+
+        {% csrf_token %}
+
+        <button
+            type="submit"
+            class="btn btn-link text-decoration-none p-0">
+
+            {% if in_watchlist %}
+
+                <h3 class="mb-0 text-warning">
+                    ✓
+                </h3>
+
+                <small class="text-secondary">
+                    In Watchlist
+                </small>
+
+            {% else %}
+
+                <h3 class="mb-0">
+                    +
+                </h3>
+
+                <small class="text-secondary">
+                    Watchlist
+                </small>
+
+            {% endif %}
+
+        </button>
+
+    </form>
+
+    {% else %}
+
+    <a
+        href="{% url 'login' %}"
+        class="btn btn-link text-decoration-none p-0">
+
+        <h3 class="mb-0">+</h3>
+
+        <small class="text-secondary">
+            Watchlist
+        </small>
+
+    </a>
+
+    {% endif %}
+
+</div>
+<button
+    class="btn btn-outline-warning"
+    data-bs-toggle="modal"
+    data-bs-target="#listModal">
+
+    <i class="bi bi-bookmark-plus"></i>
+
+    Add to List
+
+</button>
+<hr>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <h2>User Reviews</h2>
+
+    {% if user.is_authenticated %}
+
+        <button
+            class="btn btn-warning"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#reviewCanvas">
+
+            {% if user_review %}
+                ✏ Edit Review
+            {% else %}
+                + Write Review
+            {% endif %}
+
+        </button>
+
+    {% endif %}
+
+</div>
+
+{% if not user.is_authenticated %}
+
+<div class="card border-0 shadow-sm">
+
+    <div class="card-body text-center py-5">
+
+        <h3 class="fw-bold mb-3">
+            Sign in to access user reviews
+        </h3>
+
+        <p class="text-muted mb-4">
+            See opinions from other fans, write your own reviews,
+            and rate this movie.
+        </p>
+
+        <a
+            href="{% url 'login' %}"
+            class="btn btn-warning px-4">
+
+            Sign in
+
+        </a>
+
+    </div>
+
+</div>
+
+{% else %}
+
+<div
+    class="offcanvas offcanvas-end"
+    tabindex="-1"
+    id="reviewCanvas">
+
+    <div class="offcanvas-header">
+
+        <h4>
+
+            {% if user_review %}
+
+                Edit Review
+
+            {% else %}
+
+                Write a Review
+
+            {% endif %}
+
+        </h4>
+
+        <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="offcanvas">
+        </button>
+
+    </div>
+
+    <div class="offcanvas-body">
+
+        {% if user_rating %}
+
+        <div class="text-center mb-4">
+
+            <div class="display-5 text-warning">
+
+                ★ {{ user_rating.rating }}/10
+
+            </div>
+
+        </div>
+
+        {% else %}
+
+        <div class="alert alert-warning">
+
+            Please rate this movie before writing a review.
+
+        </div>
+
+        {% endif %}
+
+        <form
+            method="post"
+            action="{% url 'review_movie' movie.id %}">
+
+            {% csrf_token %}
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    Review title
+
+                </label>
+
+                {{ review_form.title }}
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+
+                    Your review
+
+                </label>
+
+                {{ review_form.body }}
+
+            </div>
+
+            <div class="form-check mb-4">
+
+                {{ review_form.spoiler }}
+
+                <label class="form-check-label">
+
+                    Contains spoilers
+
+                </label>
+
+            </div>
+
+            <button
+                class="btn btn-warning w-100">
+
+                {% if user_review %}
+
+                    Update Review
+
+                {% else %}
+
+                    Submit Review
+
+                {% endif %}
+
+            </button>
+
+        </form>
+
+        {% if user_review %}
+
+        <form
+            method="post"
+            action="{% url 'delete_review' movie.id %}"
+            class="mt-3">
+
+            {% csrf_token %}
+
+            <button
+                class="btn btn-outline-danger w-100">
+
+                Delete Review
+
+            </button>
+
+        </form>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% if reviews %}
+
+    {% for review in reviews %}
+
+    <div class="card shadow-sm mb-3">
+
+        <div class="card-body">
+
+            <div class="d-flex justify-content-between">
+
+                <div>
+
+                    <h5 class="mb-1">
+
+                        {{ review.title }}
+
+                    </h5>
+
+                    <small class="text-muted">
+
+                        {{ review.user.username }}
+
+                        •
+
+                        {{ review.created_at|date:"M d, Y" }}
+
+                    </small>
+
+                </div>
+
+                <div>
+
+                    {% if review.user_rating %}
+                    <span class="badge bg-warning text-dark">
+                        ★ {{ review.user_rating }}/10
+                    </span>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            {% if review.spoiler %}
+
+                <span class="badge bg-danger mt-3">
+
+                    Spoiler
+
+                </span>
+
+            {% endif %}
+
+            <p class="mt-3 mb-0">
+
+                {{ review.body|linebreaks }}
+
+            </p>
+
+            <hr>
+
+            <div class="d-flex gap-3">
+
+                <form
+                    method="post"
+                    action="{% url 'vote_review' review.id %}">
+
+                    {% csrf_token %}
+
+                    <input
+                        type="hidden"
+                        name="value"
+                        value="1">
+
+                    <button
+                        class="btn btn-sm btn-outline-success">
+
+                        👍 Helpful
+
+                        ({{ review.helpful_count }})
+
+                    </button>
+
+                </form>
+
+                <form
+                    method="post"
+                    action="{% url 'vote_review' review.id %}">
+
+                    {% csrf_token %}
+
+                    <input
+                        type="hidden"
+                        name="value"
+                        value="-1">
+
+                    <button
+                        class="btn btn-sm btn-outline-danger">
+
+                        👎 Not Helpful
+
+                        ({{ review.not_helpful_count }})
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+{% else %}
+
+<div class="text-center py-5">
+
+    <h4>
+
+        No reviews yet
+
+    </h4>
+
+    <p class="text-muted">
+
+        Be the first to review this movie.
+
+    </p>
+
+</div>
+
+{% endif %}
+
+<hr>
+
 <h2 class="mt-5 mb-4">Top Cast</h2>
 
 <div class="row">
@@ -399,5 +797,103 @@
 
 </div>
 
+{% endif %}
+<div
+    class="modal fade"
+    id="listModal"
+    tabindex="-1">
 
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+
+                    Add to Lists
+
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <form
+                method="post"
+                action="{% url 'update_movie_lists' movie.id %}">
+
+                {% csrf_token %}
+
+                <div class="modal-body">
+
+                    {% for list in lists %}
+
+                    <div class="form-check mb-3">
+
+                        <input
+                            class="form-check-input"
+                            type="checkbox"
+                            name="lists"
+                            value="{{ list.id }}"
+                            id="list{{ list.id }}"
+
+                            {% if list.id in selected_lists %}
+                                checked
+                            {% endif %}>
+
+                        <label
+                            class="form-check-label"
+                            for="list{{ list.id }}">
+
+                            {{ list.name }}
+
+                        </label>
+
+                    </div>
+
+                    {% empty %}
+
+                    <p>
+
+                        You don't have any lists yet.
+
+                    </p>
+
+                    {% endfor %}
+
+                    <hr>
+
+                    <a
+                        href="{% url 'create_list' %}"
+                        class="btn btn-outline-warning btn-sm">
+
+                        + Create New List
+
+                    </a>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button
+                        class="btn btn-warning">
+
+                        Save
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
 {% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}
+Your Reviews
+{% endblock %}
+
+{% block content %}
+
+<h1 class="mb-4">Your Reviews</h1>
+
+{% for review in reviews %}
+
+<div class="card mb-4">
+
+    <div class="card-body">
+
+        <h3>
+
+            <a
+                href="{% url 'movie_detail' review.movie.id %}"
+                class="text-decoration-none">
+
+                {{ review.movie.title }}
+
+            </a>
+
+        </h3>
+
+        <h5>{{ review.title }}</h5>
+
+        <p>{{ review.body|truncatewords:50 }}</p>
+
+        <small class="text-muted">
+
+            {{ review.updated_at|date:"M d, Y" }}
+
+        </small>
+
+    </div>
+
+</div>
+
+{% empty %}
+
+<p>You haven't written any reviews yet.</p>
+
+{% endfor %}
+
+{% endblock %}

@@ -1,7 +1,9 @@
+from django.db.models import Count, Q
 from django.views.generic import DetailView, ListView
 
-from reviews.forms import MovieRatingForm
-from reviews.models import MovieRating
+from lists.models import List, ListItem
+from reviews.forms import MovieRatingForm, ReviewForm
+from reviews.models import MovieRating, Review
 
 from .models import Movie, Person
 
@@ -53,6 +55,65 @@ class MovieDetailView(DetailView):
 
         context["ratings"] = range(1, 11)
 
+        reviews = self.object.reviews.select_related("user").order_by("-created_at")
+
+        ratings = {
+            rating.user_id: rating.rating
+            for rating in MovieRating.objects.filter(movie=self.object)
+        }
+
+        for review in reviews:
+            review.user_rating = ratings.get(review.user_id)
+
+        reviews = reviews.annotate(
+            helpful_count=Count(
+                "votes",
+                filter=Q(votes__value=1),
+            ),
+            not_helpful_count=Count(
+                "votes",
+                filter=Q(votes__value=-1),
+            ),
+        )
+
+        context["reviews"] = reviews
+
+        if self.request.user.is_authenticated:
+            user_review = Review.objects.filter(
+                movie=self.object,
+                user=self.request.user,
+            ).first()
+
+            context["review_form"] = ReviewForm(instance=user_review)
+
+            context["user_review"] = user_review
+
+        else:
+            context["review_form"] = ReviewForm()
+
+        if self.request.user.is_authenticated:
+            context["in_watchlist"] = ListItem.objects.filter(
+                movie=self.object,
+                movie_list__user=self.request.user,
+                movie_list__is_watchlist=True,
+            ).exists()
+        else:
+            context["in_watchlist"] = False
+
+        if self.request.user.is_authenticated:
+            context["lists"] = List.objects.filter(user=self.request.user)
+
+            context["selected_lists"] = list(
+                List.objects.filter(
+                    user=self.request.user,
+                    items__movie=self.object,
+                ).values_list("id", flat=True)
+            )
+
+        else:
+            context["lists"] = []
+            context["selected_lists"] = []
+
         return context
 
 
@@ -67,5 +128,32 @@ class PersonDetailView(DetailView):
         context["filmography"] = self.object.credits.select_related("movie").order_by(
             "-movie__release_date"
         )
+
+        return context
+
+
+class HomeView(ListView):
+    model = Movie
+    template_name = "movies/home.html"
+    context_object_name = "movies"
+    ordering = ["-popularity"]
+    paginate_by = 20
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        if self.request.user.is_authenticated:
+            context["watchlist_ids"] = set(
+                ListItem.objects.filter(
+                    movie_list__user=self.request.user,
+                    movie_list__is_watchlist=True,
+                ).values_list(
+                    "movie_id",
+                    flat=True,
+                )
+            )
+
+        else:
+            context["watchlist_ids"] = set()
 
         return context

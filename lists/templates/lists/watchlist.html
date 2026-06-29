@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}
+My Watchlist
+{% endblock %}
+
+{% block content %}
+
+<h1 class="mb-4">
+    My Watchlist
+</h1>
+
+{% if items %}
+
+<div class="list-group shadow">
+
+    {% for item in items %}
+
+    <div class="list-group-item py-4">
+
+        <div class="row align-items-center">
+
+            <!-- Poster -->
+            <div class="col-md-2 text-center">
+
+                <a href="{% url 'movie_detail' item.movie.id %}">
+
+                    <img
+                        src="{{ item.movie.poster_path }}"
+                        class="img-fluid rounded shadow"
+                        style="max-height:180px;"
+                        alt="{{ item.movie.title }}">
+
+                </a>
+
+            </div>
+
+            <!-- Movie Details -->
+            <div class="col-md-8">
+
+                <h3 class="mb-3">
+
+                    <a
+                        href="{% url 'movie_detail' item.movie.id %}"
+                        class="text-decoration-none">
+
+                        {{ forloop.counter }}.
+                        {{ item.movie.title }}
+
+                    </a>
+
+                </h3>
+
+                <p class="text-secondary mb-3">
+
+                    {{ item.movie.release_date|date:"Y" }}
+
+                    •
+
+                    {{ item.movie.runtime }} min
+
+                    •
+
+                    {{ item.movie.original_language|upper }}
+
+                </p>
+
+                <h5 class="text-warning">
+
+                    ★ {{ item.movie.vote_average|floatformat:1 }}
+
+                    <small class="text-secondary">
+
+                        ({{ item.movie.vote_count }} votes)
+
+                    </small>
+
+                </h5>
+
+            </div>
+
+            <!-- Actions -->
+            <div class="col-md-2 text-end">
+
+                <form
+                    method="post"
+                    action="{% url 'toggle_watchlist' item.movie.id %}">
+
+                    {% csrf_token %}
+
+                    <button
+                        class="btn btn-outline-danger">
+
+                        <i class="bi bi-bookmark-fill"></i>
+
+                        Remove
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% else %}
+
+<div class="text-center py-5">
+
+    <i class="bi bi-bookmark display-1 text-warning"></i>
+
+    <h3 class="mt-3">
+        Your Watchlist is empty
+    </h3>
+
+    <a
+        href="{% url 'home' %}"
+        class="btn btn-warning mt-3">
+
+        Browse Movies
+
+    </a>
+
+</div>
+
+{% endif %}
+
+{% endblock %}
