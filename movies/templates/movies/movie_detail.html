@@ -7,7 +7,90 @@
 {% block content %}
 
 <div class="row mb-5">
-    <h1>{{ movie.title }}</h1>
+    <div class="d-flex justify-content-between align-items-start mb-4">
+
+        <!-- Left -->
+        <div>
+
+            <h1 class="display-4 mb-2">
+                {{ movie.title }}
+            </h1>
+
+            <div class="text-secondary">
+                {{ movie.release_date|date:"Y" }}
+                •
+                {{ movie.status }}
+                •
+                {{ movie.runtime }}m
+            </div>
+
+        </div>
+
+        <!-- Right -->
+        <div class="d-flex gap-5">
+
+            <div class="text-center">
+
+                <small class="text-secondary fw-bold">
+                    IMDb RATING
+                </small>
+
+                <h3 class="mb-0">
+                    ⭐ {{ movie.vote_average|floatformat:1 }}
+                    <small class="text-secondary">/10</small>
+                </h3>
+
+                <small class="text-secondary">
+                    {{ movie.vote_count }}
+                </small>
+
+            </div>
+
+            <div class="text-center">
+
+                <small class="text-uppercase text-secondary fw-bold">
+                    Your Rating
+                </small>
+
+                <button
+                    class="btn rating-btn btn-link text-decoration-none text-primary p-0"
+                    data-bs-toggle="modal"
+                    data-bs-target="#ratingModal">
+
+                    {% if user_rating %}
+
+                        <h3 class="mb-0 text-warning">
+                            ★ {{ user_rating.rating }}
+                            <small class="text-secondary">/10</small>
+                        </h3>
+
+                    {% else %}
+
+                        <h3 class="mb-0">
+                            ☆ Rate
+                        </h3>
+
+                    {% endif %}
+
+                </button>
+
+            </div>
+
+            <!--<div class="text-center">
+
+                <small class="text-uppercase text-secondary fw-bold">
+                    Popularity
+                </small>
+
+                <h3>
+                    ↗ {{ movie.popularity|floatformat:0 }}
+                </h3>
+
+            </div>-->
+
+        </div>
+
+    </div>
 
     <div class="col-md-3">
 
@@ -60,17 +143,45 @@
         </p>
     {% endif %}
 
-    <div class="mb-3">
+
+    <!--<div class="mb-3">
 
         <span class="badge bg-warning text-dark">
             ⭐ {{ movie.vote_average }}
         </span>
 
+        <div class="mt-3">
+
+            {% if user.is_authenticated %}
+
+            <button
+                class="btn btn-warning"
+                data-bs-toggle="modal"
+                data-bs-target="#ratingModal">
+
+                ⭐ Rate
+
+            </button>
+
+            {% else %}
+
+            <a
+                href="{% url 'login' %}"
+                class="btn btn-warning">
+
+                ⭐ Sign in to Rate
+
+            </a>
+
+            {% endif %}
+
+        </div>
+
         <span class="badge bg-secondary">
             {{ movie.vote_count }} votes
         </span>
 
-    </div>
+    </div>-->
 
     <p>{{ movie.overview }}</p>
 
@@ -122,43 +233,48 @@
 
 <hr>
 
-<h2 class="mt-5">Top Cast</h2>
+<h2 class="mt-5 mb-4">Top Cast</h2>
 
 <div class="row">
 
-{% for credit in cast|slice:":12" %}
+    {% for credit in cast|slice:":20" %}
 
-<div class="col-md-2 mb-4">
+    <div class="col-md-6 mb-4">
 
-    <a href="{% url 'person_detail' credit.person.id %}">
-        <div class="card h-100">
+        <a
+            href="{% url 'person_detail' credit.person.id %}"
+            class="text-decoration-none text-dark">
 
-            <img
-                src="{{ credit.person.profile_path }}"
-                class="card-img-top"
-                alt="{{ credit.person.name }}"
-            >
+            <div class="d-flex align-items-center">
 
-            <div class="card-body">
+                <img
+                    src="{{ credit.person.profile_path }}"
+                    class="cast-photo"
+                    alt="{{ credit.person.name }}">
 
-                <h6>{{ credit.person.name }}</h6>
+                <div class="ms-3">
 
-                <small>{{ credit.character_name }}</small>
+                    <h5 class="mb-1 fw-bold">
+                        {{ credit.person.name }}
+                    </h5>
+
+                    <p class="text-secondary mb-0">
+                        {{ credit.character_name }}
+                    </p>
+
+                </div>
 
             </div>
 
-        </div>
+        </a>
 
-    </a>
+    </div>
 
-
-
-</div>
-
-
-{% endfor %}
+    {% endfor %}
 
 </div>
+
+
 
 {% for credit in crew %}
 
@@ -174,6 +290,114 @@
 
 {% endfor %}
 
+<div
+    class="modal fade"
+    id="ratingModal"
+    tabindex="-1">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content bg-dark text-white">
+
+            <div class="modal-header border-0">
+
+                <button
+                    type="button"
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body text-center">
+
+                <div
+                    class="display-1 text-warning mb-3">
+                    ★
+                </div>
+
+                <h6 class="text-warning fw-bold">
+                    RATE THIS
+                </h6>
+
+                <h2 class="mb-4">
+                    {{ movie.title }}
+                </h2>
+
+                <form
+                    method="POST"
+                    action="{% url 'rate_movie' movie.id %}">
+
+                    {% csrf_token %}
+
+                    <div class="rating-stars mb-4">
+
+                        {% for i in "12345678910"|make_list %}
+                        {% endfor %}
+
+                        {% for i in ratings %}
+
+                            <i
+                                class="bi bi-star fs-2 star"
+                                data-rating="{{ i }}">
+                            </i>
+
+                        {% endfor %}
+
+                    </div>
+
+                    <input
+                        type="hidden"
+                        name="rating"
+                        id="rating-value"
+                        value="{% if user_rating %}{{ user_rating.rating }}{% endif %}">
+
+                    <button
+                    id="rate-btn"
+                    class="btn btn-warning mt-4 px-5"
+                    disabled>
+
+                    Rate
+
+                    </button>
+
+                </form>
+
+                {% if user_rating %}
+
+                <div class="mt-4">
+
+                    <div class="fs-4 text-warning mb-2">
+                        ★ {{ user_rating.rating }}/10
+                    </div>
+
+                    <form
+                        method="post"
+                        action="{% url 'remove_rating' movie.id %}">
+
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            class="btn btn-link text-danger text-decoration-none p-0">
+
+                            Remove
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 
 {% endblock %}

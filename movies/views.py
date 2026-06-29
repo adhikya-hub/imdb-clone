@@ -1,5 +1,8 @@
 from django.views.generic import DetailView, ListView
 
+from reviews.forms import MovieRatingForm
+from reviews.models import MovieRating
+
 from .models import Movie, Person
 
 
@@ -35,6 +38,20 @@ class MovieDetailView(DetailView):
         context["crew"] = self.object.credits.exclude(job="Actor").select_related(
             "person"
         )
+
+        if self.request.user.is_authenticated:
+            user_rating = MovieRating.objects.filter(
+                movie=self.object,
+                user=self.request.user,
+            ).first()
+
+            context["user_rating"] = user_rating
+            context["rating_form"] = MovieRatingForm(instance=user_rating)
+        else:
+            context["user_rating"] = None
+            context["rating_form"] = MovieRatingForm()
+
+        context["ratings"] = range(1, 11)
 
         return context
 

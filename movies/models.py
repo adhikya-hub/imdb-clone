@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Avg, Count
 
 
 class Movie(models.Model):
@@ -55,6 +56,17 @@ class Movie(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def refresh_rating(self):
+        stats = self.ratings.aggregate(
+            average=Avg("rating"),
+            count=Count("id"),
+        )
+
+        self.vote_average = round(stats["average"] or 0, 1)
+        self.vote_count = stats["count"]
+
+        self.save(update_fields=["vote_average", "vote_count"])
 
     def __str__(self):
         return self.title

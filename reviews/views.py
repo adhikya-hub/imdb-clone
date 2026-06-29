@@ -22,4 +22,20 @@ class RateMovieView(LoginRequiredMixin, View):
             },
         )
 
+        movie.refresh_rating()
+
+        return redirect("movie_detail", pk=pk)
+
+
+class RemoveRatingView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        movie = get_object_or_404(Movie, pk=pk)
+
+        MovieRating.objects.filter(
+            movie=movie,
+            user=request.user,
+        ).delete()
+
+        movie.refresh_rating()
+
         return redirect("movie_detail", pk=pk)
