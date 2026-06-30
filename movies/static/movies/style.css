@@ -231,7 +231,17 @@ body {
     margin-bottom: 8px;
 }
 
-.watchlist-btn {
+.watchlist-icn-form {
+    position: absolute;
+
+    top: 10px;
+
+    left: 10px;
+
+    z-index: 10;
+}
+
+.watchlist-icn {
     width: 45px;
 
     height: 45px;

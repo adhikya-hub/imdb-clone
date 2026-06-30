@@ -642,7 +642,7 @@
                         name="value"
                         value="1">
 
-                    <button
+                    <!--<button
                         type="submit"
                         class="btn btn-sm btn-outline-success">
 
@@ -652,7 +652,23 @@
                             {{ review.helpful_count }}
                         </span>)
 
-                    </button>
+                    </button>-->
+                        <button
+                            type="submit"
+                            class="btn btn-sm">
+
+                            <i
+                                id="helpful-icon-{{ review.id }}"
+                                class="bi {% if review.user_vote == 1 %}bi-hand-thumbs-up-fill{% else %}bi-hand-thumbs-up{% endif %}">
+                            </i>
+
+                            Helpful
+
+                            (<span id="helpful-{{ review.id }}">
+                                {{ review.helpful_count }}
+                            </span>)
+
+                        </button>
 
                 </form>
 
@@ -669,7 +685,7 @@
                         name="value"
                         value="-1">
 
-                    <button
+                    <!--<button
                         type="submit"
                         class="btn btn-sm btn-outline-danger">
 
@@ -679,7 +695,23 @@
                             {{ review.not_helpful_count }}
                         </span>)
 
-                    </button>
+                    </button>-->
+                        <button
+                            type="submit"
+                            class="btn btn-sm">
+
+                            <i
+                                id="not-helpful-icon-{{ review.id }}"
+                                class="bi {% if review.user_vote == -1 %}bi-hand-thumbs-down-fill{% else %}bi-hand-thumbs-down{% endif %}">
+                            </i>
+
+                            Not Helpful
+
+                            (<span id="not-helpful-{{ review.id }}">
+                                {{ review.not_helpful_count }}
+                            </span>)
+
+                        </button>
 
                 </form>
 
@@ -913,7 +945,8 @@
 
             <form
                 method="post"
-                action="{% url 'update_movie_lists' movie.id %}">
+                action="{% url 'update_movie_lists' movie.id %}"
+                class="movie-lists-form">
 
                 {% csrf_token %}
 
@@ -978,6 +1011,7 @@
                 </div>
 
             </form>
+
 
         </div>
 

@@ -163,6 +163,31 @@ class DeleteListView(LoginRequiredMixin, DeleteView):
         return List.objects.filter(user=self.request.user)
 
 
+# class UpdateMovieListsView(LoginRequiredMixin, View):
+#     def post(self, request, pk):
+
+#         movie = get_object_or_404(Movie, pk=pk)
+
+#         selected_lists = request.POST.getlist("lists")
+
+#         user_lists = List.objects.filter(user=request.user)
+
+#         for movie_list in user_lists:
+#             if str(movie_list.id) in selected_lists:
+#                 ListItem.objects.get_or_create(
+#                     movie_list=movie_list,
+#                     movie=movie,
+#                 )
+
+#             else:
+#                 ListItem.objects.filter(
+#                     movie_list=movie_list,
+#                     movie=movie,
+#                 ).delete()
+
+#         return redirect("movie_detail", pk=pk)
+
+
 class UpdateMovieListsView(LoginRequiredMixin, View):
     def post(self, request, pk):
 
@@ -170,7 +195,13 @@ class UpdateMovieListsView(LoginRequiredMixin, View):
 
         selected_lists = request.POST.getlist("lists")
 
-        user_lists = List.objects.filter(user=request.user)
+        user_lists = List.objects.filter(
+            user=request.user,
+            is_watchlist=False,
+            is_history=False,
+        )
+
+        saved_to = 0
 
         for movie_list in user_lists:
             if str(movie_list.id) in selected_lists:
@@ -179,13 +210,20 @@ class UpdateMovieListsView(LoginRequiredMixin, View):
                     movie=movie,
                 )
 
+                saved_to += 1
+
             else:
                 ListItem.objects.filter(
                     movie_list=movie_list,
                     movie=movie,
                 ).delete()
 
-        return redirect("movie_detail", pk=pk)
+        return JsonResponse(
+            {
+                "success": True,
+                "saved_to": saved_to,
+            }
+        )
 
 
 class HistoryView(LoginRequiredMixin, ListView):

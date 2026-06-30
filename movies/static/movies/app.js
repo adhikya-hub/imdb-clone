@@ -228,11 +228,60 @@ function initReviewVoteButtons() {
 
       const reviewId = form.dataset.review;
 
+      // Update counts
       document.getElementById(`helpful-${reviewId}`).textContent = data.helpful;
 
       document.getElementById(`not-helpful-${reviewId}`).textContent =
         data.not_helpful;
+
+      // Update icons
+      const helpfulIcon = document.getElementById(`helpful-icon-${reviewId}`);
+
+      const notHelpfulIcon = document.getElementById(
+        `not-helpful-icon-${reviewId}`,
+      );
+
+      if (data.user_vote === 1) {
+        helpfulIcon.classList.remove("bi-hand-thumbs-up");
+        helpfulIcon.classList.add("bi-hand-thumbs-up-fill");
+
+        notHelpfulIcon.classList.remove("bi-hand-thumbs-down-fill");
+        notHelpfulIcon.classList.add("bi-hand-thumbs-down");
+      } else {
+        notHelpfulIcon.classList.remove("bi-hand-thumbs-down");
+        notHelpfulIcon.classList.add("bi-hand-thumbs-down-fill");
+
+        helpfulIcon.classList.remove("bi-hand-thumbs-up-fill");
+        helpfulIcon.classList.add("bi-hand-thumbs-up");
+      }
     });
+  });
+}
+
+function initMovieListsForm() {
+  const form = document.querySelector(".movie-lists-form");
+
+  if (!form) return;
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const response = await fetch(form.action, {
+      method: "POST",
+      body: new FormData(form),
+    });
+
+    if (!response.ok) return;
+
+    const data = await response.json();
+
+    const message = document.getElementById("list-message");
+
+    message.classList.remove("d-none");
+
+    message.textContent = `✓ Saved to ${data.saved_to} list${data.saved_to == 1 ? "" : "s"}.`;
+
+    bootstrap.Modal.getInstance(document.getElementById("listModal")).hide();
   });
 }
 
@@ -242,4 +291,5 @@ document.addEventListener("DOMContentLoaded", () => {
   initRatingButtons();
   initRemoveRatingButton();
   initReviewVoteButtons();
+  initMovieListsForm();
 });

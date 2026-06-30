@@ -3,7 +3,7 @@ from django.views.generic import DetailView, ListView
 
 from lists.models import FavoritePerson, List, ListItem
 from reviews.forms import MovieRatingForm, ReviewForm
-from reviews.models import MovieRating, Review
+from reviews.models import MovieRating, Review, ReviewVote
 
 from .models import Movie, Person
 from .search import es
@@ -41,7 +41,7 @@ class HomeView(ListView):
 
             return [movies[id] for id in ids if id in movies]
 
-        return Movie.objects.order_by("-popularity")
+        return Movie.objects.order_by("popularity")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -135,6 +135,22 @@ class MovieDetailView(DetailView):
             ),
         )
 
+        if self.request.user.is_authenticated:
+            user_votes = {
+                vote.review_id: vote.value
+                for vote in ReviewVote.objects.filter(
+                    user=self.request.user,
+                    review__movie=self.object,
+                )
+            }
+
+            for review in reviews:
+                review.user_vote = user_votes.get(review.id)
+
+        else:
+            for review in reviews:
+                review.user_vote = None
+
         context["reviews"] = reviews
 
         if self.request.user.is_authenticated:
@@ -160,11 +176,17 @@ class MovieDetailView(DetailView):
             context["in_watchlist"] = False
 
         if self.request.user.is_authenticated:
-            context["lists"] = List.objects.filter(user=self.request.user)
+            context["lists"] = List.objects.filter(
+                user=self.request.user,
+                is_watchlist=False,
+                is_history=False,
+            )
 
             context["selected_lists"] = list(
                 List.objects.filter(
                     user=self.request.user,
+                    is_watchlist=False,
+                    is_history=False,
                     items__movie=self.object,
                 ).values_list("id", flat=True)
             )

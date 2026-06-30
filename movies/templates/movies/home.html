@@ -24,12 +24,12 @@ Home
                 <form
                     method="post"
                     action="{% url 'toggle_watchlist' movie.id %}"
-                    class="watchlist-form">
+                    class="watchlist-icn-form">
 
                     {% csrf_token %}
 
                     <button
-                        class="watchlist-btn"
+                        class="watchlist-icn"
                         type="submit">
 
                         {% if movie.id in watchlist_ids %}
@@ -189,30 +189,30 @@ Home
 new Swiper(".peopleSwiper", {
 
     slidesPerView: 6,
-
+    slidesPerGroup: 4,
     spaceBetween: 30,
+    speed: 300,
 
     navigation: {
-        nextEl: ".swiper-button-next",
-        prevEl: ".swiper-button-prev",
+        nextEl: ".peopleSwiper .swiper-button-next",
+        prevEl: ".peopleSwiper .swiper-button-prev",
     },
 
     grabCursor: true,
 
     breakpoints: {
-
         320: {
             slidesPerView: 2,
+            slidesPerGroup: 2,
         },
-
         768: {
             slidesPerView: 4,
+            slidesPerGroup: 4,
         },
-
         1200: {
             slidesPerView: 6,
+            slidesPerGroup: 4,
         }
-
     }
 
 });
@@ -221,9 +221,11 @@ new Swiper(".movieSwiper",{
 
     slidesPerView:6,
 
+    slidesPerGroup: 4,
+
     spaceBetween:25,
 
-    speed:600,
+    speed:300,
 
     grabCursor:true,
 
@@ -239,6 +241,7 @@ new Swiper(".movieSwiper",{
 
         0:{
             slidesPerView:2,
+            slidesPerGroup: 2,
         },
 
         768:{
