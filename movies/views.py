@@ -6,14 +6,59 @@ from reviews.forms import MovieRatingForm, ReviewForm
 from reviews.models import MovieRating, Review
 
 from .models import Movie, Person
+from .search import es
 
 
 class HomeView(ListView):
     model = Movie
     template_name = "movies/home.html"
     context_object_name = "movies"
-    ordering = ["-popularity"]
     paginate_by = 20
+
+    def get_queryset(self):
+        query = self.request.GET.get("q")
+
+        if query:
+            response = es.search(
+                index="movies",
+                query={
+                    "multi_match": {
+                        "query": query,
+                        "fields": [
+                            "title^3",
+                            "original_title^2",
+                            "overview",
+                            "tagline",
+                        ],
+                        "fuzziness": "AUTO",
+                    }
+                },
+            )
+
+            ids = [int(hit["_id"]) for hit in response["hits"]["hits"]]
+
+            movies = {movie.id: movie for movie in Movie.objects.filter(id__in=ids)}
+
+            return [movies[id] for id in ids if id in movies]
+
+        return Movie.objects.order_by("-popularity")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        if self.request.user.is_authenticated:
+            context["watchlist_ids"] = set(
+                ListItem.objects.filter(
+                    movie_list__user=self.request.user,
+                    movie_list__is_watchlist=True,
+                ).values_list("movie_id", flat=True)
+            )
+        else:
+            context["watchlist_ids"] = set()
+
+        context["search_query"] = self.request.GET.get("q", "")
+
+        return context
 
 
 class MovieDetailView(DetailView):
@@ -132,28 +177,28 @@ class PersonDetailView(DetailView):
         return context
 
 
-class HomeView(ListView):
-    model = Movie
-    template_name = "movies/home.html"
-    context_object_name = "movies"
-    ordering = ["-popularity"]
-    paginate_by = 20
+# class HomeView(ListView):
+#     model = Movie
+#     template_name = "movies/home.html"
+#     context_object_name = "movies"
+#     ordering = ["-popularity"]
+#     paginate_by = 20
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
 
-        if self.request.user.is_authenticated:
-            context["watchlist_ids"] = set(
-                ListItem.objects.filter(
-                    movie_list__user=self.request.user,
-                    movie_list__is_watchlist=True,
-                ).values_list(
-                    "movie_id",
-                    flat=True,
-                )
-            )
+#         if self.request.user.is_authenticated:
+#             context["watchlist_ids"] = set(
+#                 ListItem.objects.filter(
+#                     movie_list__user=self.request.user,
+#                     movie_list__is_watchlist=True,
+#                 ).values_list(
+#                     "movie_id",
+#                     flat=True,
+#                 )
+#             )
 
-        else:
-            context["watchlist_ids"] = set()
+#         else:
+#             context["watchlist_ids"] = set()
 
-        return context
+#         return context

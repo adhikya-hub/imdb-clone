@@ -36,6 +36,22 @@ LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "home"
 LOGIN_URL = "login"
 
+
+# ELASTICSEARCH_DSL = {
+#     "default": {
+#         "hosts": [os.getenv("ELASTICSEARCH_HOST")],
+#         "basic_auth": (
+#             os.getenv("ELASTICSEARCH_USERNAME"),
+#             os.getenv("ELASTICSEARCH_PASSWORD"),
+#         ),
+#     }
+# }
+ELASTICSEARCH_HOST = os.getenv("ELASTICSEARCH_HOST")
+
+ELASTICSEARCH_USERNAME = os.getenv("ELASTICSEARCH_USERNAME")
+
+ELASTICSEARCH_PASSWORD = os.getenv("ELASTICSEARCH_PASSWORD")
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -49,6 +65,7 @@ INSTALLED_APPS = [
     "accounts",
     "reviews",
     "lists",
+    # "django_elasticsearch_dsl",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",

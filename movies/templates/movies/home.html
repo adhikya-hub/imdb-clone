@@ -76,4 +76,11 @@ Home
 
 </div>
 
+{% if not movies %}
+    <div class="text-center py-5">
+        <h3>No movies found.</h3>
+        <p>Try searching for another title.</p>
+    </div>
+{% endif %}
+
 {% endblock %}
