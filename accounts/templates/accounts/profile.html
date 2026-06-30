@@ -1,0 +1,454 @@
+{% extends "base.html" %}
+
+{% block title %}
+Profile
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <!-- Profile Header -->
+
+    <div class="bg-dark rounded p-5 mb-5">
+
+        <div class="row align-items-center">
+
+            <div class="col-md-2 text-center">
+
+                <i
+                    class="bi bi-person-circle text-white"
+                    style="font-size:7rem;">
+                </i>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <h1 class="display-5 text-white">
+
+                    {{ user.username }}
+
+                </h1>
+
+                <p class="text-secondary">
+
+                    Member since {{ user.date_joined|date:"M Y" }}
+
+                </p>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <div class="row g-2">
+
+                    <div class="col-6">
+
+                        <a
+                            href="{% url 'user_ratings' %}"
+                            class="text-decoration-none">
+
+                            <div class="card text-center h-100">
+
+                                <div class="card-body">
+
+                                    <h3>{{ rating_count }}</h3>
+
+                                    <small>Ratings</small>
+
+                                </div>
+
+                            </div>
+
+                        </a>
+
+                    </div>
+
+                    <div class="col-6">
+
+                        <a
+                            href="{% url 'watchlist' %}"
+                            class="text-decoration-none">
+
+                            <div class="card text-center h-100">
+
+                                <div class="card-body">
+
+                                    <h3>{{ watchlist_count }}</h3>
+
+                                    <small>Watchlist</small>
+
+                                </div>
+
+                            </div>
+
+                        </a>
+
+                    </div>
+
+                    <div class="col-6">
+
+                        <a
+                            href="{% url 'lists' %}"
+                            class="text-decoration-none">
+
+                            <div class="card text-center h-100">
+
+                                <div class="card-body">
+
+                                    <h3>{{ list_count }}</h3>
+
+                                    <small>Lists</small>
+
+                                </div>
+
+                            </div>
+
+                        </a>
+
+                    </div>
+
+                    <div class="col-6">
+
+                        <a
+                            href="{% url 'favorite_people' %}"
+                            class="text-decoration-none">
+
+                            <div class="card text-center h-100">
+
+                                <div class="card-body">
+
+                                    <h3>{{ favorite_people_count }}</h3>
+
+                                    <small>People</small>
+
+                                </div>
+
+                            </div>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Ratings -->
+
+    <div class="d-flex align-items-center mb-3">
+
+        <div
+            class="bg-warning rounded me-2"
+            style="width:5px;height:30px;">
+        </div>
+
+        <a
+            href="{% url 'user_ratings' %}"
+            class="text-decoration-none">
+
+            <h2 class="mb-0 text-light">
+
+                Ratings
+
+                <small class="text-secondary">
+
+                    {{ rating_count }}
+
+                </small>
+
+                <i class="bi bi-chevron-right"></i>
+
+            </h2>
+
+        </a>
+
+    </div>
+
+    <div class="row mb-5">
+
+        {% for rating in ratings %}
+
+        <div class="col-md-2">
+
+            <a href="{% url 'movie_detail' rating.movie.id %}">
+
+                <img
+                    src="{{ rating.movie.poster_path }}"
+                    class="img-fluid rounded shadow">
+
+            </a>
+
+            <div class="mt-2">
+
+                ⭐ {{ rating.rating }}/10
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    <!-- Watchlist -->
+
+    <div class="d-flex align-items-center mb-3">
+
+        <div
+            class="bg-warning rounded me-2"
+            style="width:5px;height:30px;">
+        </div>
+
+        <a
+            href="{% url 'watchlist' %}"
+            class="text-decoration-none">
+
+            <h2 class="mb-0 text-light">
+
+                Watchlist
+
+                <small class="text-secondary">
+
+                    {{ watchlist_count }}
+
+                </small>
+
+                <i class="bi bi-chevron-right"></i>
+
+            </h2>
+
+        </a>
+
+    </div>
+
+    <div class="row mb-5">
+
+        {% for item in watchlist %}
+
+        <div class="col-md-2">
+
+            <a href="{% url 'movie_detail' item.movie.id %}">
+
+                <img
+                    src="{{ item.movie.poster_path }}"
+                    class="img-fluid rounded shadow">
+
+            </a>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    <!-- Lists -->
+
+    <div class="d-flex align-items-center mb-3">
+
+        <div
+            class="bg-warning rounded me-2"
+            style="width:5px;height:30px;">
+        </div>
+
+        <a
+            href="{% url 'lists' %}"
+            class="text-decoration-none">
+
+            <h2 class="mb-0 text-light">
+
+                Lists
+
+                <small class="text-secondary">
+
+                    {{ list_count }}
+
+                </small>
+
+                <i class="bi bi-chevron-right"></i>
+
+            </h2>
+
+        </a>
+
+    </div>
+
+    <div class="card mb-5">
+
+        <div class="list-group list-group-flush">
+
+            {% for list in lists %}
+
+            <a
+                href="{% url 'list_detail' list.id %}"
+                class="list-group-item list-group-item-action">
+
+                <h5>
+
+                    {{ list.name }}
+
+                </h5>
+
+                <small>
+
+                    {{ list.items.count }} movies
+
+                </small>
+
+            </a>
+
+            {% empty %}
+
+            <div class="list-group-item">
+
+                No Lists
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <!-- Favorite People -->
+
+    <div class="d-flex align-items-center mb-3">
+
+        <div
+            class="bg-warning rounded me-2"
+            style="width:5px;height:30px;">
+        </div>
+
+        <a
+            href="{% url 'favorite_people' %}"
+            class="text-decoration-none">
+
+            <h2 class="mb-0 text-light">
+
+                Favorite People
+
+                <small class="text-secondary">
+
+                    {{ favorite_people_count }}
+
+                </small>
+
+                <i class="bi bi-chevron-right"></i>
+
+            </h2>
+
+        </a>
+
+    </div>
+
+    <div class="row mb-5">
+
+        {% for favorite in favorite_people %}
+
+        <div class="col-md-2 text-center">
+
+            <a
+                href="{% url 'person_detail' favorite.person.id %}">
+
+                <img
+                    src="{{ favorite.person.profile_path }}"
+                    class="img-fluid rounded-circle shadow"
+                    style="width:130px;height:130px;object-fit:cover;">
+
+            </a>
+
+            <div class="mt-2">
+
+                {{ favorite.person.name }}
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    <!-- Reviews -->
+
+    <div class="d-flex align-items-center mb-3">
+
+        <div
+            class="bg-warning rounded me-2"
+            style="width:5px;height:30px;">
+        </div>
+
+        <a
+            href="{% url 'user_reviews' %}"
+            class="text-decoration-none">
+
+            <h2 class="mb-0 text-light">
+
+                Reviews
+
+                <small class="text-secondary">
+
+                    {{ review_count }}
+
+                </small>
+
+                <i class="bi bi-chevron-right"></i>
+
+            </h2>
+
+        </a>
+
+    </div>
+
+    <div class="row">
+
+        {% for review in reviews %}
+
+        <div class="col-md-6 mb-4">
+
+            <div class="card h-100 shadow">
+
+                <div class="card-body">
+
+                    <h5>
+
+                        <a
+                            href="{% url 'movie_detail' review.movie.id %}">
+
+                            {{ review.movie.title }}
+
+                        </a>
+
+                    </h5>
+
+                    <hr>
+
+                    <p>
+
+                        {{ review.body|truncatewords:35 }}
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <p>No reviews yet.</p>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

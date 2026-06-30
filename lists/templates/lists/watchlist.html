@@ -99,6 +99,15 @@ My Watchlist
 
                 </form>
 
+                <form
+                    method="post"
+                    action="{% url 'toggle_history' item.movie.id %}">
+                    {% csrf_token %}
+                    <button class="btn btn-success">
+                        Mark as Watched
+                    </button>
+                </form>
+
             </div>
 
         </div>

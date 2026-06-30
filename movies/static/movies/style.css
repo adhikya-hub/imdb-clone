@@ -62,3 +62,209 @@ body {
 
     border-radius: 12px;
 }
+
+.peopleSwiper {
+    width: 100%;
+    padding: 20px 45px 40px;
+    overflow: hidden;
+}
+
+.peopleSwiper .swiper-wrapper {
+    align-items: flex-start;
+}
+
+.peopleSwiper .swiper-slide {
+    width: 200px !important;
+    flex-shrink: 0;
+}
+
+.person-card {
+    position: relative;
+    text-align: center;
+}
+
+.person-image {
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+    margin: auto;
+    transition: transform 0.3s;
+}
+
+.person-image:hover {
+    transform: scale(1.05);
+}
+
+.person-name {
+    color: white;
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-top: 18px;
+    margin-bottom: 2px;
+}
+
+.person-department {
+    color: #999;
+    font-size: 0.9rem;
+}
+
+.favorite-form {
+    position: absolute;
+    left: 18px;
+    bottom: 70px;
+    z-index: 100;
+}
+
+.favorite-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(0, 0, 0, 0.75);
+    color: white;
+    font-size: 1.5rem;
+    transition: 0.25s;
+}
+
+.favorite-btn:hover {
+    color: #f5c518;
+    background: rgba(0, 0, 0, 0.9);
+}
+
+.favorite-btn i {
+    pointer-events: none;
+}
+
+.peopleSwiper .swiper-button-next,
+.peopleSwiper .swiper-button-prev {
+    color: white;
+    width: 55px;
+    height: 80px;
+    background: rgba(0, 0, 0, 0.45);
+    border-radius: 10px;
+}
+
+.peopleSwiper .swiper-button-next:hover,
+.peopleSwiper .swiper-button-prev:hover {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.peopleSwiper .swiper-button-next::after,
+.peopleSwiper .swiper-button-prev::after {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+/* Pagination (optional) */
+
+.peopleSwiper .swiper-pagination-bullet {
+    background: white;
+}
+
+.peopleSwiper .swiper-pagination-bullet-active {
+    background: #f5c518;
+}
+
+/* ===========================
+   MOVIE SWIPER
+=========================== */
+
+.movieSwiper {
+    width: 100%;
+
+    padding: 20px 45px 50px;
+}
+
+.movieSwiper .swiper-slide {
+    width: 240px !important;
+}
+
+.movie-card {
+    position: relative;
+
+    background: #1f1f1f;
+
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    transition: 0.25s;
+}
+
+.movie-card:hover {
+    transform: translateY(-8px);
+}
+
+.movie-poster {
+    width: 100%;
+
+    height: 340px;
+
+    object-fit: cover;
+}
+
+.movie-info {
+    padding: 15px;
+}
+
+.movie-title {
+    color: white;
+
+    font-size: 1.25rem;
+
+    font-weight: 600;
+
+    min-height: 58px;
+}
+
+.movie-year {
+    color: #aaa;
+}
+
+.movie-rating {
+    color: #f5c518;
+
+    font-size: 1rem;
+
+    margin-bottom: 8px;
+}
+
+.watchlist-btn {
+    width: 45px;
+
+    height: 45px;
+
+    border: none;
+
+    background: rgba(0, 0, 0, 0.75);
+
+    color: white;
+
+    border-radius: 10px;
+
+    transition: 0.2s;
+}
+
+.watchlist-btn:hover {
+    color: #f5c518;
+}
+
+.movieSwiper .swiper-button-next,
+.movieSwiper .swiper-button-prev {
+    color: white;
+
+    background: rgba(0, 0, 0, 0.55);
+
+    width: 55px;
+
+    height: 90px;
+
+    border-radius: 12px;
+}
+
+.movieSwiper .swiper-button-next:hover,
+.movieSwiper .swiper-button-prev:hover {
+    color: #f5c518;
+}

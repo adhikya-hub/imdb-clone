@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db import models
 
-from movies.models import Movie
+from movies.models import Movie, Person
 
 
 class List(models.Model):
@@ -18,6 +18,8 @@ class List(models.Model):
     is_public = models.BooleanField(default=True)
 
     is_watchlist = models.BooleanField(default=False)
+
+    is_history = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -60,3 +62,30 @@ class ListItem(models.Model):
 
     def __str__(self):
         return f"{self.movie.title} ({self.movie_list.name})"
+
+
+class FavoritePerson(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="favorite_people",
+    )
+
+    person = models.ForeignKey(
+        Person,
+        on_delete=models.CASCADE,
+        related_name="favorite_users",
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "person"],
+                name="unique_favorite_person",
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.user.username} - {self.person.name}"

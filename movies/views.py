@@ -1,7 +1,7 @@
 from django.db.models import Count, Q
 from django.views.generic import DetailView, ListView
 
-from lists.models import List, ListItem
+from lists.models import FavoritePerson, List, ListItem
 from reviews.forms import MovieRatingForm, ReviewForm
 from reviews.models import MovieRating, Review
 
@@ -57,6 +57,20 @@ class HomeView(ListView):
             context["watchlist_ids"] = set()
 
         context["search_query"] = self.request.GET.get("q", "")
+
+        context["people"] = Person.objects.order_by("-popularity")[:12]
+
+        if self.request.user.is_authenticated:
+            context["favorite_people"] = set(
+                FavoritePerson.objects.filter(
+                    user=self.request.user,
+                ).values_list(
+                    "person_id",
+                    flat=True,
+                )
+            )
+        else:
+            context["favorite_people"] = set()
 
         return context
 
@@ -173,6 +187,14 @@ class PersonDetailView(DetailView):
         context["filmography"] = self.object.credits.select_related("movie").order_by(
             "-movie__release_date"
         )
+        if self.request.user.is_authenticated:
+            context["is_favorite"] = FavoritePerson.objects.filter(
+                user=self.request.user,
+                person=self.object,
+            ).exists()
+
+        else:
+            context["is_favorite"] = False
 
         return context
 

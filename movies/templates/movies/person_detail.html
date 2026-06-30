@@ -19,6 +19,31 @@
     </div>
 
     <div class="col-md-9">
+        <form
+            method="post"
+            action="{% url 'toggle_favorite_person' person.id %}">
+
+            {% csrf_token %}
+
+            <button class="btn btn-outline-danger">
+
+                {% if is_favorite %}
+
+                    <i class="bi bi-heart-fill"></i>
+
+                    Favorite
+
+                {% else %}
+
+                    <i class="bi bi-heart"></i>
+
+                    Favorite
+
+                {% endif %}
+
+            </button>
+
+        </form>
 
         <h1>{{ person.name }}</h1>
 

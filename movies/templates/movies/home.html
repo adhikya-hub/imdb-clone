@@ -6,73 +6,170 @@ Home
 
 {% block content %}
 
-<h1 class="mb-4"> Movies</h1>
 
-<div class="row">
+<h2 class="mb-4">Movies</h2>
 
-    {% for movie in movies %}
+<div class="swiper movieSwiper">
 
-    <div class="col-md-3 mb-4">
+    <div class="swiper-wrapper">
 
-        <div class="card h-100 shadow position-relative">
+        {% for movie in movies %}
 
-            {% if user.is_authenticated %}
+        <div class="swiper-slide">
 
-            <form
-                method="post"
-                action="{% url 'toggle_watchlist' movie.id %}"
-                class="position-absolute top-0 end-0 m-2"
-                style="z-index:10;">
+            <div class="movie-card">
 
-                {% csrf_token %}
+                {% if user.is_authenticated %}
 
-                <button
-                    type="submit"
-                    class="btn btn-dark rounded-circle">
+                <form
+                    method="post"
+                    action="{% url 'toggle_watchlist' movie.id %}"
+                    class="watchlist-form">
 
-                    {% if movie.id in watchlist_ids %}
+                    {% csrf_token %}
 
-                        <i class="bi bi-bookmark-fill text-warning"></i>
+                    <button
+                        class="watchlist-btn"
+                        type="submit">
 
-                    {% else %}
+                        {% if movie.id in watchlist_ids %}
 
-                        <i class="bi bi-bookmark text-white"></i>
+                            <i class="bi bi-bookmark-fill text-warning"></i>
 
-                    {% endif %}
+                        {% else %}
 
-                </button>
+                            <i class="bi bi-bookmark"></i>
 
-            </form>
+                        {% endif %}
 
-            {% endif %}
+                    </button>
 
-            <a
-                href="{% url 'movie_detail' movie.id %}"
-                class="text-decoration-none text-dark">
+                </form>
 
-                <img
-                    src="{{ movie.poster_path }}"
-                    class="card-img-top"
-                    alt="{{ movie.title }}">
+                {% endif %}
 
-                <div class="card-body">
+                <a
+                    href="{% url 'movie_detail' movie.id %}"
+                    class="text-decoration-none">
 
-                    <h5>{{ movie.title }}</h5>
+                    <img
+                        src="{{ movie.poster_path }}"
+                        class="movie-poster">
 
-                    <p>⭐ {{ movie.vote_average }}</p>
+                    <div class="movie-info">
 
-                    <p>{{ movie.release_date|date:"Y" }}</p>
+                        <div class="movie-rating">
 
-                </div>
+                            ⭐ {{ movie.vote_average }}
 
-            </a>
+                        </div>
+
+                        <h5 class="movie-title">
+
+                            {{ movie.title }}
+
+                        </h5>
+
+                        <small class="movie-year">
+
+                            {{ movie.release_date|date:"Y" }}
+
+                        </small>
+
+                    </div>
+
+                </a>
+
+            </div>
 
         </div>
 
+        {% endfor %}
+
     </div>
 
-    {% endfor %}
+    <div class="swiper-button-next"></div>
 
+    <div class="swiper-button-prev"></div>
+
+</div>
+
+<h2 class="mb-4">People</h2>
+
+<div class="swiper peopleSwiper">
+
+    <div class="swiper-wrapper">
+
+        {% for person in people %}
+
+        <div class="swiper-slide">
+
+            <div class="person-card">
+
+                {% if user.is_authenticated %}
+
+                    <form
+                        method="post"
+                        action="{% url 'toggle_favorite_person' person.id %}"
+                        class="favorite-form">
+
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            class="favorite-btn"
+                            data-person-id="{{ person.id }}">
+
+                            {% if person.id in favorite_people %}
+
+                                <i class="bi bi-heart-fill text-warning"></i>
+
+                            {% else %}
+
+                                <i class="bi bi-heart text-white"></i>
+
+                            {% endif %}
+
+                        </button>
+
+                    </form>
+
+                {% endif %}
+
+                <a
+                    href="{% url 'person_detail' person.id %}"
+                    class="text-decoration-none">
+
+                    <img
+                        src="{{ person.profile_path }}"
+                        class="person-image"
+                        alt="{{ person.name }}">
+
+                    <h5 class="person-name">
+
+                        {{ person.name }}
+
+                    </h5>
+
+                    <p class="person-department">
+
+                        {{ person.known_for_department }}
+
+                    </p>
+
+                </a>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    <div class="swiper-button-next"></div>
+
+    <div class="swiper-button-prev"></div>
 
 </div>
 
@@ -82,5 +179,80 @@ Home
         <p>Try searching for another title.</p>
     </div>
 {% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+
+new Swiper(".peopleSwiper", {
+
+    slidesPerView: 6,
+
+    spaceBetween: 30,
+
+    navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+    },
+
+    grabCursor: true,
+
+    breakpoints: {
+
+        320: {
+            slidesPerView: 2,
+        },
+
+        768: {
+            slidesPerView: 4,
+        },
+
+        1200: {
+            slidesPerView: 6,
+        }
+
+    }
+
+});
+
+new Swiper(".movieSwiper",{
+
+    slidesPerView:6,
+
+    spaceBetween:25,
+
+    speed:600,
+
+    grabCursor:true,
+
+    navigation:{
+
+        nextEl:".movieSwiper .swiper-button-next",
+
+        prevEl:".movieSwiper .swiper-button-prev",
+
+    },
+
+    breakpoints:{
+
+        0:{
+            slidesPerView:2,
+        },
+
+        768:{
+            slidesPerView:4,
+        },
+
+        1200:{
+            slidesPerView:6,
+        }
+
+    }
+
+});
+
+</script>
 
 {% endblock %}

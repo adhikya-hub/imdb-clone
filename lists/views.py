@@ -1,4 +1,6 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import View
@@ -9,12 +11,13 @@ from django.views.generic import (
     ListView,
     UpdateView,
 )
-from django.views.generic.edit import CreateView
 
-from movies.models import Movie
+from lists.utils import add_to_history
+from movies.models import Movie, Person
+from reviews.models import MovieRating, Review
 
 from .forms import ListForm
-from .models import List, ListItem
+from .models import FavoritePerson, List, ListItem
 
 
 class ToggleWatchlistView(LoginRequiredMixin, View):
@@ -22,7 +25,7 @@ class ToggleWatchlistView(LoginRequiredMixin, View):
 
         movie = get_object_or_404(Movie, pk=pk)
 
-        watchlist, created = List.objects.get_or_create(
+        watchlist, _ = List.objects.get_or_create(
             user=request.user,
             is_watchlist=True,
             defaults={
@@ -38,13 +41,22 @@ class ToggleWatchlistView(LoginRequiredMixin, View):
 
         if item.exists():
             item.delete()
+
+            in_watchlist = False
+
         else:
             ListItem.objects.create(
                 movie_list=watchlist,
                 movie=movie,
             )
 
-        return redirect(request.META.get("HTTP_REFERER", "/"))
+            in_watchlist = True
+
+        return JsonResponse(
+            {
+                "watchlist": in_watchlist,
+            }
+        )
 
 
 class WatchlistView(LoginRequiredMixin, ListView):
@@ -76,6 +88,7 @@ class UserListsView(LoginRequiredMixin, ListView):
         return List.objects.filter(
             user=self.request.user,
             is_watchlist=False,
+            is_history=False,
         ).order_by("-updated_at")
 
     def get_context_data(self, **kwargs):
@@ -173,3 +186,166 @@ class UpdateMovieListsView(LoginRequiredMixin, View):
                 ).delete()
 
         return redirect("movie_detail", pk=pk)
+
+
+class HistoryView(LoginRequiredMixin, ListView):
+    model = ListItem
+    template_name = "lists/history.html"
+    context_object_name = "items"
+
+    def get_queryset(self):
+
+        history, created = List.objects.get_or_create(
+            user=self.request.user,
+            is_history=True,
+            defaults={
+                "name": "Watch History",
+                "description": "",
+                "is_public": False,
+            },
+        )
+
+        return history.items.select_related("movie").order_by("-added_at")
+
+
+class ToggleHistoryView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+
+        movie = get_object_or_404(Movie, pk=pk)
+
+        history, created = List.objects.get_or_create(
+            user=request.user,
+            is_history=True,
+            defaults={
+                "name": "Watch History",
+                "description": "",
+                "is_public": False,
+            },
+        )
+
+        item = ListItem.objects.filter(
+            movie_list=history,
+            movie=movie,
+        ).first()
+
+        if item:
+            item.delete()
+        else:
+            ListItem.objects.create(
+                movie_list=history,
+                movie=movie,
+            )
+
+            watchlist = List.objects.filter(
+                user=request.user,
+                is_watchlist=True,
+            ).first()
+
+            if watchlist:
+                ListItem.objects.filter(
+                    movie_list=watchlist,
+                    movie=movie,
+                ).delete()
+
+        add_to_history(request.user, movie)
+
+        return redirect(request.META.get("HTTP_REFERER", "/"))
+
+
+class RemoveHistoryView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+
+        movie = get_object_or_404(Movie, pk=pk)
+
+        history = get_object_or_404(
+            List,
+            user=request.user,
+            is_history=True,
+        )
+
+        has_rating = MovieRating.objects.filter(
+            user=request.user,
+            movie=movie,
+        ).exists()
+
+        has_review = Review.objects.filter(
+            user=request.user,
+            movie=movie,
+        ).exists()
+
+        if has_rating or has_review:
+            messages.error(
+                request,
+                "To remove this movie from your Watch History, remove your rating and review first.",
+            )
+
+            return redirect("history")
+
+        ListItem.objects.filter(
+            movie_list=history,
+            movie=movie,
+        ).delete()
+
+        messages.success(
+            request,
+            "Movie removed from Watch History.",
+        )
+
+        return redirect("history")
+
+
+# class ToggleFavoritePersonView(LoginRequiredMixin, View):
+#     def post(self, request, pk):
+
+#         person = get_object_or_404(Person, pk=pk)
+
+#         favorite = FavoritePerson.objects.filter(
+#             user=request.user,
+#             person=person,
+#         ).first()
+
+#         if favorite:
+#             favorite.delete()
+#         else:
+#             FavoritePerson.objects.create(
+#                 user=request.user,
+#                 person=person,
+#             )
+
+#         return redirect(request.META.get("HTTP_REFERER", "/"))
+
+
+class ToggleFavoritePersonView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+
+        person = get_object_or_404(Person, pk=pk)
+
+        favorite, created = FavoritePerson.objects.get_or_create(
+            user=request.user,
+            person=person,
+        )
+
+        if not created:
+            favorite.delete()
+            is_favorite = False
+        else:
+            is_favorite = True
+
+        return JsonResponse(
+            {
+                "favorite": is_favorite,
+            }
+        )
+
+
+class FavoritePeopleView(LoginRequiredMixin, ListView):
+    model = FavoritePerson
+    template_name = "lists/favorite_people.html"
+    context_object_name = "favorites"
+
+    def get_queryset(self):
+        return (
+            FavoritePerson.objects.filter(user=self.request.user)
+            .select_related("person")
+            .order_by("-created_at")
+        )

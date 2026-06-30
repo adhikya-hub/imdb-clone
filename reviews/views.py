@@ -1,8 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.views import View
 from django.views.generic import ListView
 
+from lists.utils import add_to_history
 from movies.models import Movie
 
 from .forms import ReviewForm
@@ -14,7 +16,7 @@ class RateMovieView(LoginRequiredMixin, View):
 
         movie = get_object_or_404(Movie, pk=pk)
 
-        rating = request.POST.get("rating")
+        rating = int(request.POST.get("rating"))
 
         MovieRating.objects.update_or_create(
             user=request.user,
@@ -24,9 +26,18 @@ class RateMovieView(LoginRequiredMixin, View):
             },
         )
 
+        add_to_history(request.user, movie)
+
         movie.refresh_rating()
 
-        return redirect("movie_detail", pk=pk)
+        return JsonResponse(
+            {
+                "success": True,
+                "rating": rating,
+                "vote_average": movie.vote_average,
+                "vote_count": movie.vote_count,
+            }
+        )
 
 
 class RemoveRatingView(LoginRequiredMixin, View):
@@ -40,7 +51,13 @@ class RemoveRatingView(LoginRequiredMixin, View):
 
         movie.refresh_rating()
 
-        return redirect("movie_detail", pk=pk)
+        return JsonResponse(
+            {
+                "removed": True,
+                "vote_average": movie.vote_average,
+                "vote_count": movie.vote_count,
+            }
+        )
 
 
 class ReviewView(LoginRequiredMixin, View):
@@ -63,6 +80,8 @@ class ReviewView(LoginRequiredMixin, View):
             review.movie = movie
             review.user = request.user
             review.save()
+
+            add_to_history(request.user, movie)
 
         return redirect("movie_detail", pk=pk)
 

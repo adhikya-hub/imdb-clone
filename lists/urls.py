@@ -3,8 +3,13 @@ from django.urls import path
 from .views import (
     CreateListView,
     DeleteListView,
+    FavoritePeopleView,
+    HistoryView,
     ListDetailView,
+    RemoveHistoryView,
     RemoveListItemView,
+    ToggleFavoritePersonView,
+    ToggleHistoryView,
     ToggleWatchlistView,
     UpdateListView,
     UpdateMovieListsView,
@@ -62,5 +67,30 @@ urlpatterns = [
         "movie/<int:pk>/lists/",
         UpdateMovieListsView.as_view(),
         name="update_movie_lists",
+    ),
+    path(
+        "history/",
+        HistoryView.as_view(),
+        name="history",
+    ),
+    path(
+        "history/toggle/<int:pk>/",
+        ToggleHistoryView.as_view(),
+        name="toggle_history",
+    ),
+    path(
+        "history/remove/<int:pk>/",
+        RemoveHistoryView.as_view(),
+        name="remove_history",
+    ),
+    path(
+        "favorite-people/",
+        FavoritePeopleView.as_view(),
+        name="favorite_people",
+    ),
+    path(
+        "people/<int:pk>/favorite/",
+        ToggleFavoritePersonView.as_view(),
+        name="toggle_favorite_person",
     ),
 ]

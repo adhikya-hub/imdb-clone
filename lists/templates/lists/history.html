@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}
+Watch History
+{% endblock %}
+
+{% block content %}
+
+<h2 class="mb-4">Watch History</h2>
+
+<div class="row">
+
+    {% for item in items %}
+
+    <div class="col-md-3 mb-4">
+
+        <a
+            href="{% url 'movie_detail' item.movie.id %}"
+            class="text-decoration-none text-dark">
+
+            <div class="card h-100">
+
+                <img
+                    src="{{ item.movie.poster_path }}"
+                    class="card-img-top"
+                    alt="{{ item.movie.title }}">
+
+                <div class="card-body">
+
+                    <h5>{{ item.movie.title }}</h5>
+
+                    <p>⭐ {{ item.movie.vote_average }}</p>
+
+                    <small>
+                        Watched on {{ item.added_at|date:"M d, Y" }}
+                    </small>
+
+                    <form
+                        method="post"
+                        action="{% url 'remove_history' item.movie.id %}">
+
+                        {% csrf_token %}
+
+                        <button
+                            class="btn btn-outline-danger btn-sm">
+
+                            Remove from History
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </a>
+
+    </div>
+
+    {% empty %}
+
+    <p>You haven't watched any movies yet.</p>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}
