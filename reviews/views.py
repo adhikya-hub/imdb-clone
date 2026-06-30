@@ -102,6 +102,23 @@ class DeleteReviewView(LoginRequiredMixin, View):
         return redirect("movie_detail", pk=pk)
 
 
+# class VoteReviewView(LoginRequiredMixin, View):
+#     def post(self, request, pk):
+
+#         review = get_object_or_404(Review, pk=pk)
+
+#         value = int(request.POST["value"])
+
+#         ReviewVote.objects.update_or_create(
+#             review=review,
+#             user=request.user,
+#             defaults={
+#                 "value": value,
+#             },
+#         )
+
+
+#         return redirect("movie_detail", pk=review.movie.pk)
 class VoteReviewView(LoginRequiredMixin, View):
     def post(self, request, pk):
 
@@ -117,7 +134,17 @@ class VoteReviewView(LoginRequiredMixin, View):
             },
         )
 
-        return redirect("movie_detail", pk=review.movie.pk)
+        helpful = review.votes.filter(value=ReviewVote.HELPFUL).count()
+        not_helpful = review.votes.filter(value=ReviewVote.NOT_HELPFUL).count()
+
+        return JsonResponse(
+            {
+                "success": True,
+                "helpful": helpful,
+                "not_helpful": not_helpful,
+                "user_vote": value,
+            }
+        )
 
 
 class UserRatingsView(LoginRequiredMixin, ListView):

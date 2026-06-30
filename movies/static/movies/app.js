@@ -188,9 +188,58 @@ function initRemoveRatingButton() {
     bootstrap.Modal.getInstance(document.getElementById("ratingModal")).hide();
   });
 }
+
+// function initReviewVoteButtons() {
+//   document.querySelectorAll(".review-vote-form").forEach((form) => {
+//     form.addEventListener("submit", async function (e) {
+//       e.preventDefault();
+
+//       const response = await fetch(form.action, {
+//         method: "POST",
+//         body: new FormData(form),
+//       });
+
+//       if (!response.ok) return;
+
+//       const data = await response.json();
+
+//       const reviewId = form.dataset.review;
+
+//       document.getElementById(`helpful-${reviewId}`).textContent = data.helpful;
+
+//       document.getElementById(`not-helpful-${reviewId}`).textContent =
+//         data.not_helpful;
+//     });
+//   });
+// }
+function initReviewVoteButtons() {
+  document.querySelectorAll(".review-vote-form").forEach((form) => {
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const response = await fetch(form.action, {
+        method: "POST",
+        body: new FormData(form),
+      });
+
+      if (!response.ok) return;
+
+      const data = await response.json();
+
+      const reviewId = form.dataset.review;
+
+      document.getElementById(`helpful-${reviewId}`).textContent = data.helpful;
+
+      document.getElementById(`not-helpful-${reviewId}`).textContent =
+        data.not_helpful;
+    });
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   initFavoriteButtons();
   initWatchlistButtons();
   initRatingButtons();
   initRemoveRatingButton();
+  initReviewVoteButtons();
 });

@@ -631,7 +631,9 @@
 
                 <form
                     method="post"
-                    action="{% url 'vote_review' review.id %}">
+                    action="{% url 'vote_review' review.id %}"
+                    class="review-vote-form"
+                    data-review="{{ review.id }}">
 
                     {% csrf_token %}
 
@@ -641,11 +643,14 @@
                         value="1">
 
                     <button
+                        type="submit"
                         class="btn btn-sm btn-outline-success">
 
                         👍 Helpful
 
-                        ({{ review.helpful_count }})
+                        (<span id="helpful-{{ review.id }}">
+                            {{ review.helpful_count }}
+                        </span>)
 
                     </button>
 
@@ -653,7 +658,9 @@
 
                 <form
                     method="post"
-                    action="{% url 'vote_review' review.id %}">
+                    action="{% url 'vote_review' review.id %}"
+                    class="review-vote-form"
+                    data-review="{{ review.id }}">
 
                     {% csrf_token %}
 
@@ -663,11 +670,14 @@
                         value="-1">
 
                     <button
+                        type="submit"
                         class="btn btn-sm btn-outline-danger">
 
                         👎 Not Helpful
 
-                        ({{ review.not_helpful_count }})
+                        (<span id="not-helpful-{{ review.id }}">
+                            {{ review.not_helpful_count }}
+                        </span>)
 
                     </button>
 
