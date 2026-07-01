@@ -51,14 +51,35 @@ function initWatchlistButtons() {
 
       const data = await response.json();
 
+      const button = form.querySelector("button");
       const icon = form.querySelector("i");
 
-      if (data.watchlist) {
-        icon.classList.remove("bi-bookmark", "text-white");
-        icon.classList.add("bi-bookmark-fill", "text-warning");
+      if (button.classList.contains("watchlist-icn")) {
+        if (data.watchlist) {
+          icon.classList.remove("bi-bookmark", "text-white");
+          icon.classList.add("bi-bookmark-fill", "text-warning");
+        } else {
+          icon.classList.remove("bi-bookmark-fill", "text-warning");
+          icon.classList.add("bi-bookmark", "text-white");
+        }
       } else {
-        icon.classList.remove("bi-bookmark-fill", "text-warning");
-        icon.classList.add("bi-bookmark", "text-white");
+        if (data.watchlist) {
+          button.classList.remove("btn-outline-warning");
+          button.classList.add("btn-warning");
+
+          button.innerHTML = `
+            <i class="bi bi-bookmark-fill"></i>
+            In Watchlist
+          `;
+        } else {
+          button.classList.remove("btn-warning");
+          button.classList.add("btn-outline-warning");
+
+          button.innerHTML = `
+            <i class="bi bi-bookmark-plus"></i>
+            Add to Watchlist
+          `;
+        }
       }
 
       const movieId = form.dataset.movie;
@@ -74,6 +95,7 @@ function initWatchlistButtons() {
           document
             .getElementById("watchlist-container")
             ?.classList.add("d-none");
+
           document
             .getElementById("empty-watchlist")
             ?.classList.remove("d-none");

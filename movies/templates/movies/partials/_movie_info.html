@@ -1,0 +1,209 @@
+<div class="row mt-4">
+
+    <div class="col-lg-8">
+
+
+        <div class="d-flex flex-wrap gap-2 mb-4">
+
+            {% for genre in movie.genres.all %}
+
+                <span class="badge rounded-pill border border-secondary px-3 py-2">
+
+                    {{ genre.name }}
+
+                </span>
+
+            {% endfor %}
+
+        </div>
+
+
+        <p class="fs-5">
+
+            {{ movie.overview }}
+
+        </p>
+
+        <hr>
+
+
+        <div class="py-3 border-bottom">
+
+            <strong class="me-3">
+                Director
+            </strong>
+
+            {% for credit in crew %}
+
+                {% if credit.job == "Director" %}
+
+                    <a
+                        href="{% url 'person_detail' credit.person.id %}"
+                        class="text-decoration-none">
+
+                        {{ credit.person.name }}
+
+                    </a>
+
+                {% endif %}
+
+            {% endfor %}
+
+        </div>
+
+
+        <div class="py-3 border-bottom">
+
+            <strong class="me-3">
+                Writers
+            </strong>
+
+            {% for credit in crew %}
+
+                {% if credit.job == "Writer" or credit.job == "Screenplay" %}
+
+                    <a
+                        href="{% url 'person_detail' credit.person.id %}"
+                        class="text-decoration-none">
+
+                        {{ credit.person.name }}
+
+                    </a>{% if not forloop.last %} • {% endif %}
+
+                {% endif %}
+
+            {% endfor %}
+
+        </div>
+
+
+        <div class="py-3 border-bottom">
+
+            <strong class="me-3">
+                Stars
+            </strong>
+
+            {% for credit in cast|slice:":3" %}
+
+                <a
+                    href="{% url 'person_detail' credit.person.id %}"
+                    class="text-decoration-none">
+
+                    {{ credit.person.name }}
+
+                </a>
+
+                {% if not forloop.last %}
+                    •
+                {% endif %}
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+
+    <div class="col-lg-4">
+
+        <div class="d-grid gap-3">
+
+            {% if user.is_authenticated %}
+
+                <form
+                    method="post"
+                    action="{% url 'toggle_watchlist' movie.id %}"
+                    class="watchlist-form">
+
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="btn {% if in_watchlist %}btn-warning{% else %}btn-outline-warning{% endif %} w-100">
+
+                        {% if in_watchlist %}
+
+                            <i class="bi bi-bookmark-fill"></i>
+
+                            In Watchlist
+
+                        {% else %}
+
+                            <i class="bi bi-bookmark-plus"></i>
+
+                            Add to Watchlist
+
+                        {% endif %}
+
+                    </button>
+
+                </form>
+
+            {% else %}
+
+                <a
+                    href="{% url 'login' %}"
+                    class="btn btn-outline-warning w-100">
+
+                    <i class="bi bi-bookmark-plus"></i>
+
+                    Add to Watchlist
+
+                </a>
+
+            {% endif %}
+
+            <button
+                class="btn btn-outline-light w-100"
+                data-bs-toggle="modal"
+                data-bs-target="#listModal">
+
+                <i class="bi bi-collection"></i>
+
+                Add to Custom Lists
+
+            </button>
+
+            <hr>
+
+            <div>
+
+                <p class="mb-2">
+
+                    <strong>Release</strong>
+
+                    {{ movie.release_date|date:"F d, Y" }}
+
+                </p>
+
+                <p class="mb-2">
+
+                    <strong>Runtime</strong>
+
+                    {{ movie.runtime }} min
+
+                </p>
+
+                <p class="mb-2">
+
+                    <strong>Language</strong>
+
+                    {{ movie.original_language|upper }}
+
+                </p>
+
+                <p class="mb-2">
+
+                    <strong>Status</strong>
+
+                    {{ movie.status }}
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

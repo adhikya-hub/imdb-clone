@@ -219,30 +219,3 @@ class PersonDetailView(DetailView):
             context["is_favorite"] = False
 
         return context
-
-
-# class HomeView(ListView):
-#     model = Movie
-#     template_name = "movies/home.html"
-#     context_object_name = "movies"
-#     ordering = ["-popularity"]
-#     paginate_by = 20
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-
-#         if self.request.user.is_authenticated:
-#             context["watchlist_ids"] = set(
-#                 ListItem.objects.filter(
-#                     movie_list__user=self.request.user,
-#                     movie_list__is_watchlist=True,
-#                 ).values_list(
-#                     "movie_id",
-#                     flat=True,
-#                 )
-#             )
-
-#         else:
-#             context["watchlist_ids"] = set()
-
-#         return context

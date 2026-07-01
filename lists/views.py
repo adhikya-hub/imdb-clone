@@ -332,27 +332,6 @@ class RemoveHistoryView(LoginRequiredMixin, View):
         return redirect("history")
 
 
-# class ToggleFavoritePersonView(LoginRequiredMixin, View):
-#     def post(self, request, pk):
-
-#         person = get_object_or_404(Person, pk=pk)
-
-#         favorite = FavoritePerson.objects.filter(
-#             user=request.user,
-#             person=person,
-#         ).first()
-
-#         if favorite:
-#             favorite.delete()
-#         else:
-#             FavoritePerson.objects.create(
-#                 user=request.user,
-#                 person=person,
-#             )
-
-#         return redirect(request.META.get("HTTP_REFERER", "/"))
-
-
 class ToggleFavoritePersonView(LoginRequiredMixin, View):
     def post(self, request, pk):
 

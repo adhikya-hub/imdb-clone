@@ -1,0 +1,311 @@
+<h2 class="mt-5 mb-4 title-border">Top Cast</h2>
+
+<div class="row">
+
+    {% for credit in cast|slice:":10" %}
+
+    <div class="col-md-6 mb-4">
+
+        <a
+            href="{% url 'person_detail' credit.person.id %}"
+            class="text-decoration-none text-dark">
+
+            <div class="d-flex align-items-center">
+
+                <img
+                    src="{{ credit.person.profile_path }}"
+                    class="cast-photo"
+                    alt="{{ credit.person.name }}">
+
+                <div class="ms-3">
+
+                    <h5 class="mb-1 fw-bold">
+                        {{ credit.person.name }}
+                    </h5>
+
+                    <p class="text-secondary mb-0">
+                        {{ credit.character_name }}
+                    </p>
+
+                </div>
+
+            </div>
+
+        </a>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+<div class="movie-meta">
+    <div class="mt-5">
+        {% with directors=crew|dictsort:"job" %}
+        <div class="border-top py-3">
+
+            <div class="d-flex align-items-center">
+
+                <strong class="me-3" style="min-width:120px;">
+                    Director
+                </strong>
+
+                {% for credit in crew %}
+                    {% if credit.job == "Director" %}
+
+                        <a
+                            href="{% url 'person_detail' credit.person.id %}"
+                            class="text-decoration-none me-2">
+
+                            {{ credit.person.name }}
+
+                        </a>
+
+                    {% endif %}
+                {% endfor %}
+
+            </div>
+
+        </div>
+        {% endwith %}
+
+
+        <div class="border-top py-3">
+
+            <div class="d-flex align-items-center flex-wrap">
+
+                <strong class="me-3" style="min-width:120px;">
+                    Writers
+                </strong>
+
+                {% for credit in crew %}
+                    {% if credit.department == "Writing" %}
+
+                        <a
+                            href="{% url 'person_detail' credit.person.id %}"
+                            class="text-decoration-none">
+
+                            {{ credit.person.name }}
+
+                        </a>
+
+                        {% if not forloop.last %}
+                            <span class="mx-2">•</span>
+                        {% endif %}
+
+                    {% endif %}
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+
+        <div class="border-top border-bottom py-3">
+
+            <div class="d-flex align-items-center flex-wrap">
+
+                <strong class="me-3" style="min-width:120px;">
+                    Stars
+                </strong>
+
+                {% for credit in cast|slice:":3" %}
+
+                    <a
+                        href="{% url 'person_detail' credit.person.id %}"
+                        class="text-decoration-none">
+
+                        {{ credit.person.name }}
+
+                    </a>
+
+                    {% if not forloop.last %}
+                        <span class="mx-2">•</span>
+                    {% endif %}
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<div class="container mx-0 px-0 mt-5">
+
+    <section class="credit-section">
+
+        <h2 class="credit-heading title-border">
+            Details
+        </h2>
+
+        <hr>
+
+        <div class="">
+
+            <strong class="me-3">Release date</strong>
+
+            {{ movie.release_date }}
+
+        </div>
+
+        <hr>
+
+        <div class="">
+
+            <strong class="me-3">Countries of origin</strong>
+
+            {% for country in movie.origin_country %}
+                {{ country }}{% if not forloop.last %} • {% endif %}
+            {% empty %}
+                —
+            {% endfor %}
+
+        </div>
+
+        <hr>
+
+        {% if movie.homepage %}
+
+        <div class="">
+
+            <strong class="me-3">Official site</strong>
+
+            <a href="{{ movie.homepage }}" target="_blank">
+                Official Website
+            </a>
+
+        </div>
+
+        <hr>
+
+        {% endif %}
+
+        <div class="">
+
+            <strong class="me-3">Languages</strong>
+
+            {% for language in movie.spoken_languages %}
+                {{ language.english_name }}{% if not forloop.last %} • {% endif %}
+            {% empty %}
+                —
+            {% endfor %}
+
+        </div>
+
+        <hr>
+
+        <div class="">
+
+            <strong class="me-3">Production companies</strong>
+
+            {% for company in movie.production_companies %}
+                {{ company.name }}{% if not forloop.last %} • {% endif %}
+            {% empty %}
+                —
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+    <section class="credit-section mt-5">
+
+        <h2 class="credit-heading title-border">
+            Box Office
+        </h2>
+
+        <hr>
+
+        <div class="row ">
+
+            <div class="col-md-6">
+
+                <strong>Budget</strong>
+
+                <p class="mb-0">
+
+                    {% if movie.budget %}
+                        ${{ movie.budget }}
+                    {% else %}
+                        —
+                    {% endif %}
+
+                </p>
+
+            </div>
+
+            <div class="col-md-6">
+
+                <strong>Revenue</strong>
+
+                <p class="mb-0">
+
+                    {% if movie.revenue %}
+                        ${{ movie.revenue }}
+                    {% else %}
+                        —
+                    {% endif %}
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="credit-section mt-5">
+
+        <h2 class="credit-heading title-border">
+            Technical Specs
+        </h2>
+
+        <hr>
+
+        <div class="">
+
+            <strong class="me-3">Runtime</strong>
+
+            {{ movie.runtime }} min
+
+        </div>
+
+        <hr>
+
+        <div class="">
+
+            <strong class="me-3">Original language</strong>
+
+            {{ movie.original_language|upper }}
+
+        </div>
+
+        <hr>
+
+        <div class="">
+
+            <strong class="me-3">Status</strong>
+
+            {{ movie.status }}
+
+        </div>
+
+        <hr>
+
+        <div class="">
+
+            <strong class="me-3">Adult</strong>
+
+            {% if movie.adult %}
+                Yes
+            {% else %}
+                No
+            {% endif %}
+
+        </div>
+
+    </section>
+
+</div>
