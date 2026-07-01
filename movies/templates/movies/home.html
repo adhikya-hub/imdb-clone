@@ -6,9 +6,80 @@ Home
 
 {% block content %}
 
+<div class="swiper heroSwiper mb-5">
 
-<h2 class="mb-4">Movies</h2>
+    <div class="swiper-wrapper">
 
+        {% for movie in movies %}
+
+        <div
+            class="swiper-slide hero-slide"
+            style="background-image:url('{{ movie.backdrop_path }}');">
+
+            <div class="hero-overlay">
+
+                <div class="container h-100">
+
+                    <div class="row h-100 align-items-end">
+
+                        <div class="col-md-3">
+
+                            <img
+                                src="{{ movie.poster_path }}"
+                                class="hero-poster">
+
+                        </div>
+
+                        <div class="col-md-6 pb-5">
+
+                            <h2 class="display-4 fw-bold">
+
+                                {{ movie.title }}
+
+                            </h2>
+
+                            <p class="lead">
+
+                                {{ movie.overview|truncatewords:25 }}
+
+                            </p>
+
+                            <a
+                                href="{% url 'movie_detail' movie.id %}"
+                                class="btn btn-outline-warning btn-lg">
+
+                                View Details
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    <div class="swiper-button-next"></div>
+
+    <div class="swiper-button-prev"></div>
+
+</div>
+<div class="section-heading">
+
+    <span class="heading-bar"></span>
+
+    <h2>Movies</h2>
+
+    <i class="bi bi-chevron-right"></i>
+
+</div>
 <div class="swiper movieSwiper">
 
     <div class="swiper-wrapper">
@@ -24,7 +95,7 @@ Home
                 <form
                     method="post"
                     action="{% url 'toggle_watchlist' movie.id %}"
-                    class="watchlist-icn-form">
+                    class="watchlist-form watchlist-icn-form">
 
                     {% csrf_token %}
 
@@ -94,7 +165,15 @@ Home
 
 </div>
 
-<h2 class="mb-4">People</h2>
+<div class="section-heading">
+
+    <span class="heading-bar"></span>
+
+    <h2 class="mb-4">People</h2>
+
+    <i class="bi bi-chevron-right"></i>
+
+</div>
 
 <div class="swiper peopleSwiper">
 
@@ -111,7 +190,7 @@ Home
                     <form
                         method="post"
                         action="{% url 'toggle_favorite_person' person.id %}"
-                        class="favorite-form">
+                        class="favorite-form favorite-overlay-form"">
 
                         {% csrf_token %}
 
@@ -185,6 +264,25 @@ Home
 {% block scripts %}
 
 <script>
+new Swiper(".heroSwiper",{
+
+    effect:"fade",
+
+    loop:true,
+
+    speed:700,
+
+    autoplay:{
+        delay:5000,
+        disableOnInteraction:false,
+    },
+
+    navigation:{
+        nextEl:".heroSwiper .swiper-button-next",
+        prevEl:".heroSwiper .swiper-button-prev",
+    }
+
+});
 
 new Swiper(".peopleSwiper", {
 
@@ -255,6 +353,7 @@ new Swiper(".movieSwiper",{
     }
 
 });
+
 
 </script>
 

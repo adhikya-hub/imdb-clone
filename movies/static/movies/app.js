@@ -14,12 +14,24 @@ function initFavoriteButtons() {
 
       const icon = form.querySelector("i");
 
-      if (data.favorite) {
-        icon.classList.remove("bi-heart", "text-white");
-        icon.classList.add("bi-heart-fill", "text-warning");
-      } else {
-        icon.classList.remove("bi-heart-fill", "text-warning");
-        icon.classList.add("bi-heart", "text-white");
+      if (icon) {
+        if (data.favorite) {
+          icon.classList.remove("bi-heart", "text-white");
+          icon.classList.add("bi-heart-fill", "text-warning");
+        } else {
+          icon.classList.remove("bi-heart-fill", "text-warning");
+          icon.classList.add("bi-heart", "text-white");
+        }
+      }
+
+      const personId = form.dataset.person;
+
+      if (!data.favorite && personId) {
+        const card = document.getElementById(`favorite-${personId}`);
+
+        if (card) {
+          card.remove();
+        }
       }
     });
   });
@@ -47,6 +59,25 @@ function initWatchlistButtons() {
       } else {
         icon.classList.remove("bi-bookmark-fill", "text-warning");
         icon.classList.add("bi-bookmark", "text-white");
+      }
+
+      const movieId = form.dataset.movie;
+
+      if (!data.watchlist && movieId) {
+        const row = document.getElementById(`movie-${movieId}`);
+
+        if (row) {
+          row.remove();
+        }
+
+        if (document.querySelectorAll(".list-group-item").length === 0) {
+          document
+            .getElementById("watchlist-container")
+            ?.classList.add("d-none");
+          document
+            .getElementById("empty-watchlist")
+            ?.classList.remove("d-none");
+        }
       }
     });
   });

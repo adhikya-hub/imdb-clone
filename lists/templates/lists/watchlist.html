@@ -16,11 +16,13 @@ My Watchlist
 
     {% for item in items %}
 
-    <div class="list-group-item py-4">
+        <div
+            class="list-group-item py-4"
+            id="movie-{{ item.movie.id }}">
 
         <div class="row align-items-center">
 
-            <!-- Poster -->
+
             <div class="col-md-2 text-center">
 
                 <a href="{% url 'movie_detail' item.movie.id %}">
@@ -35,7 +37,6 @@ My Watchlist
 
             </div>
 
-            <!-- Movie Details -->
             <div class="col-md-8">
 
                 <h3 class="mb-3">
@@ -79,17 +80,18 @@ My Watchlist
 
             </div>
 
-            <!-- Actions -->
             <div class="col-md-2 text-end">
 
                 <form
                     method="post"
-                    action="{% url 'toggle_watchlist' item.movie.id %}">
+                    action="{% url 'toggle_watchlist' item.movie.id %}"
+                    class="watchlist-form"
+                    data-movie="{{ item.movie.id }}">
 
                     {% csrf_token %}
 
                     <button
-                        class="btn btn-outline-danger">
+                        class="btn btn-outline">
 
                         <i class="bi bi-bookmark-fill"></i>
 
@@ -103,7 +105,7 @@ My Watchlist
                     method="post"
                     action="{% url 'toggle_history' item.movie.id %}">
                     {% csrf_token %}
-                    <button class="btn btn-success">
+                    <button class="btn btn-outline-warning">
                         Mark as Watched
                     </button>
                 </form>

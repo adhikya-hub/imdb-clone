@@ -24,7 +24,9 @@ Favorite People
 
     {% for favorite in favorites %}
 
-    <div class="col-md-3 mb-4">
+    <div
+        class="col-md-3 mb-4"
+        id="favorite-{{ favorite.person.id }}">
 
         <div class="card h-100 shadow">
 
@@ -36,10 +38,15 @@ Favorite People
                     src="{{ favorite.person.profile_path }}"
                     class="card-img-top"
                     alt="{{ favorite.person.name }}"
-                    style="height: 340px; object-fit: cover;"
-                >
+                    style="height:340px; object-fit:cover;">
 
-                <div class="card-body">
+            </a>
+
+            <div class="card-body d-flex flex-column">
+
+                <a
+                    href="{% url 'person_detail' favorite.person.id %}"
+                    class="text-decoration-none text-dark">
 
                     <h5 class="card-title">
 
@@ -53,26 +60,25 @@ Favorite People
 
                     </p>
 
-                    <small class="text-secondary">
+                    <small class="text-secondary d-block mb-3">
 
                         Added {{ favorite.created_at|date:"M d, Y" }}
 
                     </small>
 
-                </div>
-
-            </a>
-
-            <div class="card-footer bg-white border-0">
+                </a>
 
                 <form
                     method="post"
-                    action="{% url 'toggle_favorite_person' favorite.person.id %}">
+                    action="{% url 'toggle_favorite_person' favorite.person.id %}"
+                    class="favorite-form mt-auto"
+                    data-person="{{ favorite.person.id }}">
 
                     {% csrf_token %}
 
                     <button
-                        class="btn btn-outline-danger w-100">
+                        type="submit"
+                        class="btn btn-outline-dark w-100">
 
                         <i class="bi bi-heart-fill"></i>
 
