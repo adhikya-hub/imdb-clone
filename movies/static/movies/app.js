@@ -289,6 +289,32 @@ function initReviewVoteButtons() {
   });
 }
 
+// function initMovieListsForm() {
+//   const form = document.querySelector(".movie-lists-form");
+
+//   if (!form) return;
+
+//   form.addEventListener("submit", async function (e) {
+//     e.preventDefault();
+
+//     const response = await fetch(form.action, {
+//       method: "POST",
+//       body: new FormData(form),
+//     });
+
+//     if (!response.ok) return;
+
+//     const data = await response.json();
+
+//     const message = document.getElementById("list-message");
+
+//     message.classList.remove("d-none");
+
+//     message.textContent = `✓ Saved to ${data.saved_to} list${data.saved_to == 1 ? "" : "s"}.`;
+
+//     bootstrap.Modal.getInstance(document.getElementById("listModal")).hide();
+//   });
+// }
 function initMovieListsForm() {
   const form = document.querySelector(".movie-lists-form");
 
@@ -304,15 +330,11 @@ function initMovieListsForm() {
 
     if (!response.ok) return;
 
-    const data = await response.json();
+    await response.json();
 
-    const message = document.getElementById("list-message");
-
-    message.classList.remove("d-none");
-
-    message.textContent = `✓ Saved to ${data.saved_to} list${data.saved_to == 1 ? "" : "s"}.`;
-
-    bootstrap.Modal.getInstance(document.getElementById("listModal")).hide();
+    bootstrap.Modal.getOrCreateInstance(
+      document.getElementById("listModal"),
+    ).hide();
   });
 }
 
