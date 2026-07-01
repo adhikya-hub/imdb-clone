@@ -5,7 +5,7 @@ pip install -r requirements.txt
 
 python manage.py migrate
 
-python manage.py loaddata data
+#python manage.py loaddata movies_fixture
 
 python manage.py index_movies
 
