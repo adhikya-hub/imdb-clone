@@ -64,11 +64,11 @@ function initWatchlistButtons() {
 
       if (button.classList.contains("watchlist-icn")) {
         if (data.watchlist) {
-          icon.classList.remove("bi-bookmark", "text-white");
+          icon.classList.remove("bi-bookmark", "text-dark");
           icon.classList.add("bi-bookmark-fill", "text-warning");
         } else {
           icon.classList.remove("bi-bookmark-fill", "text-warning");
-          icon.classList.add("bi-bookmark", "text-white");
+          icon.classList.add("bi-bookmark", "text-dark");
         }
       } else {
         if (data.watchlist) {
@@ -90,19 +90,19 @@ function initWatchlistButtons() {
         }
       }
 
-      const movieId = form.dataset.movie;
+      const watchlistContainer = document.getElementById("watchlist-container");
 
-      if (!data.watchlist && movieId) {
+      if (watchlistContainer && !data.watchlist) {
+        const movieId = form.dataset.movie;
+
         const row = document.getElementById(`movie-${movieId}`);
 
         if (row) {
           row.remove();
         }
 
-        if (document.querySelectorAll(".list-group-item").length === 0) {
-          document
-            .getElementById("watchlist-container")
-            ?.classList.add("d-none");
+        if (!watchlistContainer.querySelector("[id^='movie-']")) {
+          watchlistContainer.classList.add("d-none");
 
           document
             .getElementById("empty-watchlist")

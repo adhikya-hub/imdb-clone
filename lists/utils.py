@@ -1,4 +1,4 @@
-from lists.models import List, ListItem
+from lists.models import FavoritePerson, List, ListItem
 from reviews.models import MovieRating, Review
 
 
@@ -91,3 +91,47 @@ def annotate_movies(user, items):
             or movie.user_rating is not None
             or movie.user_review
         )
+
+
+def add_sidebar_previews(user, context):
+
+    watchlist = List.objects.filter(
+        user=user,
+        is_watchlist=True,
+    ).first()
+
+    history = List.objects.filter(
+        user=user,
+        is_history=True,
+    ).first()
+
+    latest_rating = (
+        MovieRating.objects.filter(user=user)
+        .select_related("movie")
+        .order_by("-updated_at")
+        .first()
+    )
+
+    latest_favorite = (
+        FavoritePerson.objects.filter(user=user)
+        .select_related("person")
+        .order_by("-created_at")
+        .first()
+    )
+
+    context["watchlist_preview"] = None
+    context["history_preview"] = None
+    context["ratings_preview"] = None
+    context["favorite_people_preview"] = None
+
+    if watchlist and watchlist.items.exists():
+        context["watchlist_preview"] = watchlist.items.first().movie.poster_path
+
+    if history and history.items.exists():
+        context["history_preview"] = history.items.first().movie.poster_path
+
+    if latest_rating:
+        context["ratings_preview"] = latest_rating.movie.poster_path
+
+    if latest_favorite:
+        context["favorite_people_preview"] = latest_favorite.person.profile_path

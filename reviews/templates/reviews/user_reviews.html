@@ -1,49 +1,91 @@
-{% extends "base.html" %}
+{% extends "lists/list_base.html" %}
 
 {% block title %}
 Your Reviews
 {% endblock %}
+{% block hero %}
+{% include "components/hero.html" with page_title="Your Reviews" page_description="Movies you've reviewed." item_count=reviews|length item_label="Reviews" %}
 
-{% block content %}
+{% endblock %}
 
-<h1 class="mb-4">Your Reviews</h1>
+{% block list_content %}
 
-{% for review in reviews %}
 
-<div class="card mb-4">
+<div class="card shadow-sm rounded-4">
 
-    <div class="card-body">
+    {% for review in reviews %}
 
-        <h3>
+        <div class="p-4">
 
-            <a
-                href="{% url 'movie_detail' review.movie.id %}"
-                class="text-decoration-none">
+            <div class="row">
 
-                {{ review.movie.title }}
+                <div class="col-auto">
 
-            </a>
+                    <a href="{% url 'movie_detail' review.movie.id %}">
 
-        </h3>
+                        <img
+                            src="{{ review.movie.poster_path }}"
+                            class="rounded-4"
+                            style="width:90px;height:135px;object-fit:cover;"
+                            alt="{{ review.movie.title }}">
 
-        <h5>{{ review.title }}</h5>
+                    </a>
 
-        <p>{{ review.body|truncatewords:50 }}</p>
+                </div>
 
-        <small class="text-muted">
+                <div class="col">
 
-            {{ review.updated_at|date:"M d, Y" }}
+                    <h3 class="mb-2">
 
-        </small>
+                        <a
+                            href="{% url 'movie_detail' review.movie.id %}"
+                            class="text-decoration-none text-dark">
 
-    </div>
+                            {{ review.movie.title }}
+
+                        </a>
+
+                    </h3>
+
+                    <h5 class="fw-semibold mb-3">
+
+                        {{ review.title }}
+
+                    </h5>
+
+                    <p class="text-secondary mb-3">
+
+                        {{ review.body|truncatewords:50 }}
+
+                    </p>
+
+                    <small class="text-secondary">
+
+                        Reviewed on {{ review.updated_at|date:"M d, Y" }}
+
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% if not forloop.last %}
+
+            <hr class="my-0">
+
+        {% endif %}
+
+    {% empty %}
+
+        {% include "components/empty_state.html" with
+        title="No reviews yet"
+        message="Movies you review will appear here."
+        %}
+
+    {% endfor %}
 
 </div>
-
-{% empty %}
-
-<p>You haven't written any reviews yet.</p>
-
-{% endfor %}
 
 {% endblock %}

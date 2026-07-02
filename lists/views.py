@@ -12,7 +12,12 @@ from django.views.generic import (
     UpdateView,
 )
 
-from lists.utils import add_to_history, annotate_movies, remove_from_history
+from lists.utils import (
+    add_sidebar_previews,
+    add_to_history,
+    annotate_movies,
+    remove_from_history,
+)
 from movies.models import Movie, Person
 from reviews.models import MovieRating, Review
 
@@ -85,10 +90,10 @@ class WatchlistView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context["preview_image"] = None
-
-        if context["items"]:
-            context["preview_image"] = context["items"][0].movie.poster_path
+        add_sidebar_previews(
+            self.request.user,
+            context,
+        )
 
         return context
 
@@ -121,6 +126,11 @@ class UserListsView(LoginRequiredMixin, ListView):
         context["page_title"] = "Your Lists"
         context["page_description"] = "Lists you've created."
 
+        add_sidebar_previews(
+            self.request.user,
+            context,
+        )
+
         return context
 
 
@@ -142,6 +152,10 @@ class ListDetailView(LoginRequiredMixin, DetailView):
         annotate_movies(self.request.user, items)
 
         context["items"] = items
+        add_sidebar_previews(
+            self.request.user,
+            context,
+        )
 
         return context
 
@@ -255,10 +269,10 @@ class HistoryView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context["preview_image"] = None
-
-        if context["items"]:
-            context["preview_image"] = context["items"][0].movie.poster_path
+        add_sidebar_previews(
+            self.request.user,
+            context,
+        )
 
         return context
 
@@ -397,9 +411,9 @@ class FavoritePeopleView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context["preview_image"] = None
-
-        if context["favorites"]:
-            context["preview_image"] = context["favorites"][0].person.profile_path
+        add_sidebar_previews(
+            self.request.user,
+            context,
+        )
 
         return context

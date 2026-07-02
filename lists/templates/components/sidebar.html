@@ -22,10 +22,10 @@
 
             </div>
 
-            {% if preview_image %}
+            {% if watchlist_preview %}
 
                 <img
-                    src="{{ preview_image }}"
+                    src="{{ watchlist_preview }}"
                     class="rounded-4"
                     style="width:90px;height:90px;object-fit:cover;"
                     alt="Watchlist">
@@ -60,10 +60,10 @@
 
             </div>
 
-            {% if preview_image %}
+            {% if history_preview %}
 
                 <img
-                    src="{{ preview_image }}"
+                    src="{{ history_preview }}"
                     class="rounded-4"
                     style="width:90px;height:90px;object-fit:cover;"
                     alt="History">
@@ -75,6 +75,42 @@
                     style="width:90px;height:90px;">
 
                     <i class="bi bi-eye-fill text-primary fs-1"></i>
+
+                </div>
+
+            {% endif %}
+
+        </a>
+        <a
+            href="{% url 'user_ratings' %}"
+            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-3">
+
+            <div>
+
+                <h5 class="mb-2 fw-semibold">
+                    Your Ratings
+                </h5>
+
+                <small class="text-secondary">
+                    Movies you've rated.
+                </small>
+
+            </div>
+
+            {% if ratings_preview %}
+
+                <img
+                    src="{{ ratings_preview }}"
+                    class="rounded-4"
+                    style="width:90px;height:90px;object-fit:cover;">
+
+            {% else %}
+
+                <div
+                    class="bg-light rounded-4 d-flex align-items-center justify-content-center"
+                    style="width:90px;height:90px;">
+
+                    <i class="bi bi-star-fill text-warning fs-1"></i>
 
                 </div>
 
@@ -124,10 +160,10 @@
 
             </div>
 
-            {% if preview_image %}
+            {% if favorite_people_preview %}
 
                 <img
-                    src="{{ preview_image }}"
+                    src="{{ favorite_people_preview }}"
                     class="rounded-4"
                     style="width:90px;height:90px;object-fit:cover;"
                     alt="Favorite People">

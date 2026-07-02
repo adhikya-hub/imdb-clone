@@ -1,78 +1,25 @@
-{% extends "base.html" %}
+{% extends "lists/list_base.html" %}
 
-{% block title %}
-Your Ratings
+{% block hero %}
+
+{% include "components/hero.html" with page_title="Your Ratings" page_description="Movies you've rated." item_count=ratings|length item_label="Titles" %}
+
 {% endblock %}
+{% block list_content %}
 
-{% block content %}
 
-<h1 class="mb-4">Your Ratings</h1>
+<div id="ratings-container">
 
-{% for rating in ratings %}
+    {% for rating in ratings %}
 
-<div class="card mb-3">
+        {% include "components/movie_row.html" with movie=rating.movie %}
 
-    <div class="row g-0">
+    {% empty %}
 
-        <div class="col-md-2">
+        {% include "components/empty_state.html" with title="No ratings yet" message="Movies you rate will appear here." %}
 
-            <a href="{% url 'movie_detail' rating.movie.id %}">
-
-                <img
-                    src="{{ rating.movie.poster_path }}"
-                    class="img-fluid rounded-start"
-                >
-
-            </a>
-
-        </div>
-
-        <div class="col-md-10">
-
-            <div class="card-body">
-
-                <h4>
-
-                    <a
-                        href="{% url 'movie_detail' rating.movie.id %}"
-                        class="text-decoration-none">
-
-                        {{ rating.movie.title }}
-
-                    </a>
-
-                </h4>
-
-                <p>
-
-                    Your Rating
-
-                    <span class="badge bg-warning text-dark">
-
-                        ★ {{ rating.rating }}/10
-
-                    </span>
-
-                </p>
-
-                <small class="text-muted">
-
-                    Rated on {{ rating.updated_at|date:"M d, Y" }}
-
-                </small>
-
-            </div>
-
-        </div>
-
-    </div>
+    {% endfor %}
 
 </div>
-
-{% empty %}
-
-<p>You haven't rated any movies yet.</p>
-
-{% endfor %}
 
 {% endblock %}

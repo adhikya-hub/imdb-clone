@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.views import View
 from django.views.generic import ListView
 
-from lists.utils import add_to_history
+from lists.utils import add_sidebar_previews, add_to_history, annotate_movies
 from movies.models import Movie
 
 from .forms import ReviewForm
@@ -136,19 +136,29 @@ class UserRatingsView(LoginRequiredMixin, ListView):
     context_object_name = "ratings"
 
     def get_queryset(self):
-        return (
-            MovieRating.objects.filter(user=self.request.user)
+
+        ratings = list(
+            MovieRating.objects.filter(
+                user=self.request.user,
+            )
             .select_related("movie")
             .order_by("-updated_at")
         )
 
+        annotate_movies(
+            self.request.user,
+            ratings,
+        )
+
+        return ratings
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context["preview_image"] = None
-
-        if context["ratings"]:
-            context["preview_image"] = context["ratings"][0].movie.poster_path
+        add_sidebar_previews(
+            self.request.user,
+            context,
+        )
 
         return context
 
