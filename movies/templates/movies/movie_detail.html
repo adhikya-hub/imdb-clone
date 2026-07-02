@@ -28,14 +28,14 @@
 
         <div class="d-flex gap-5">
 
-            <div class="text-center">
+            <div class="text-center ">
 
                 <small class="text-secondary fw-bold">
                     IMDb RATING
                 </small>
 
-                <h3 class="mb-0">
-                    ⭐ <span id="vote-average">{{ movie.vote_average|floatformat:1  }}</span>
+                <h3 class="mb-0 text-warning">
+                    ★ <span id="vote-average">{{ movie.vote_average|floatformat:1  }}</span>
                     <small class="text-secondary">/10</small>
                 </h3>
 
@@ -62,7 +62,7 @@
 
                             {% if user_rating %}
 
-                                <span class="text-warning">
+                                <span >
 
                                     ★ {{ user_rating.rating }}
 
@@ -88,7 +88,7 @@
                     Popularity
                 </small>
 
-                <h3>
+                <h3 class="text-danger">
                     ↗ {{ movie.popularity|floatformat:0 }}
                 </h3>
 

@@ -198,16 +198,33 @@
 
                 {% endif %}
 
-            <button
-                class="btn btn-outline-light w-100 rounded-pill"
-                data-bs-toggle="modal"
-                data-bs-target="#listModal">
+                    {% if user.is_authenticated %}
 
-                <i class="bi bi-collection"></i>
+                        <button
+                            type="button"
+                            class="btn btn-outline-light w-100 rounded-pill"
+                            data-bs-toggle="modal"
+                            data-bs-target="#listModal">
 
-                Add to Custom Lists
+                            <i class="bi bi-collection"></i>
 
-            </button>
+                            Add to Custom Lists
+
+                        </button>
+
+                    {% else %}
+
+                        <a
+                            href="{% url 'login' %}"
+                            class="btn btn-outline-light w-100 rounded-pill">
+
+                            <i class="bi bi-collection"></i>
+
+                            Add to Custom Lists
+
+                        </a>
+
+                    {% endif %}
 
             <hr>
 
