@@ -119,7 +119,7 @@
 
                     <button
                         type="submit"
-                        class="btn {% if in_watchlist %}btn-warning{% else %}btn-outline-warning{% endif %} w-100">
+                        class="btn {% if in_watchlist %}btn-warning{% else %}btn-outline-warning{% endif %} w-100 rounded-pill">
 
                         {% if in_watchlist %}
 
@@ -143,7 +143,7 @@
 
                 <a
                     href="{% url 'login' %}"
-                    class="btn btn-outline-warning w-100">
+                    class="btn btn-outline-warning w-100 rounded-pill">
 
                     <i class="bi bi-bookmark-plus"></i>
 
@@ -153,8 +153,53 @@
 
             {% endif %}
 
+                {% if user.is_authenticated %}
+
+                    <form
+                        method="post"
+                        action="{% url 'toggle_history' movie.id %}"
+                        class="history-form">
+
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            class="btn {% if in_history %}btn-outline-primary{% else %}btn-outline-primary{% endif %} w-100 rounded-pill">
+
+                            {% if in_history %}
+
+                                <i class="bi bi-eye-slash"></i>
+
+                                Watched
+
+                            {% else %}
+
+                                <i class="bi bi-eye"></i>
+
+                                Mark as Watched
+
+                            {% endif %}
+
+                        </button>
+
+                    </form>
+
+                {% else %}
+
+                    <a
+                        href="{% url 'login' %}"
+                        class="btn btn-outline-primary w-100 rounded-pill">
+
+                        <i class="bi bi-eye"></i>
+
+                        Mark as Watched
+
+                    </a>
+
+                {% endif %}
+
             <button
-                class="btn btn-outline-light w-100"
+                class="btn btn-outline-light w-100 rounded-pill"
                 data-bs-toggle="modal"
                 data-bs-target="#listModal">
 

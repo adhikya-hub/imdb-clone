@@ -166,13 +166,11 @@ function initRatingButtons() {
 
     const data = await response.json();
 
-    // Update IMDb rating
     document.getElementById("vote-average").textContent =
       data.vote_average.toFixed(1);
 
     document.getElementById("vote-count").textContent = data.vote_count;
 
-    // Update "Your Rating"
     document.getElementById("your-rating").innerHTML = `
       <span class="text-warning">
         ★ ${data.rating}
@@ -180,27 +178,21 @@ function initRatingButtons() {
       <small class="text-secondary">/10</small>
     `;
 
-    // Update modal
     document.getElementById("current-rating").innerHTML = `★ ${data.rating}/10`;
 
     document
       .getElementById("remove-rating-container")
       .classList.remove("d-none");
 
-    // Keep hidden input in sync
     input.value = data.rating;
 
-    // Keep stars selected
     paint(data.rating);
 
-    // Disable button until user changes rating again
     button.disabled = true;
 
-    // Close modal
     bootstrap.Modal.getInstance(document.getElementById("ratingModal")).hide();
   });
 
-  // Reset button when modal is opened again
   document
     .getElementById("ratingModal")
     .addEventListener("shown.bs.modal", () => {
@@ -250,29 +242,6 @@ function initRemoveRatingButton() {
   });
 }
 
-// function initReviewVoteButtons() {
-//   document.querySelectorAll(".review-vote-form").forEach((form) => {
-//     form.addEventListener("submit", async function (e) {
-//       e.preventDefault();
-
-//       const response = await fetch(form.action, {
-//         method: "POST",
-//         body: new FormData(form),
-//       });
-
-//       if (!response.ok) return;
-
-//       const data = await response.json();
-
-//       const reviewId = form.dataset.review;
-
-//       document.getElementById(`helpful-${reviewId}`).textContent = data.helpful;
-
-//       document.getElementById(`not-helpful-${reviewId}`).textContent =
-//         data.not_helpful;
-//     });
-//   });
-// }
 function initReviewVoteButtons() {
   document.querySelectorAll(".review-vote-form").forEach((form) => {
     form.addEventListener("submit", async function (e) {
@@ -289,13 +258,11 @@ function initReviewVoteButtons() {
 
       const reviewId = form.dataset.review;
 
-      // Update counts
       document.getElementById(`helpful-${reviewId}`).textContent = data.helpful;
 
       document.getElementById(`not-helpful-${reviewId}`).textContent =
         data.not_helpful;
 
-      // Update icons
       const helpfulIcon = document.getElementById(`helpful-icon-${reviewId}`);
 
       const notHelpfulIcon = document.getElementById(
@@ -319,32 +286,6 @@ function initReviewVoteButtons() {
   });
 }
 
-// function initMovieListsForm() {
-//   const form = document.querySelector(".movie-lists-form");
-
-//   if (!form) return;
-
-//   form.addEventListener("submit", async function (e) {
-//     e.preventDefault();
-
-//     const response = await fetch(form.action, {
-//       method: "POST",
-//       body: new FormData(form),
-//     });
-
-//     if (!response.ok) return;
-
-//     const data = await response.json();
-
-//     const message = document.getElementById("list-message");
-
-//     message.classList.remove("d-none");
-
-//     message.textContent = `✓ Saved to ${data.saved_to} list${data.saved_to == 1 ? "" : "s"}.`;
-
-//     bootstrap.Modal.getInstance(document.getElementById("listModal")).hide();
-//   });
-// }
 function initMovieListsForm() {
   const form = document.querySelector(".movie-lists-form");
 
@@ -387,6 +328,32 @@ function initHistoryButtons() {
       }
 
       const button = form.querySelector("button");
+
+      if (
+        button.classList.contains("btn-primary") ||
+        button.classList.contains("btn-outline-primary")
+      ) {
+        if (data.watched) {
+          button.classList.remove("btn-outline-primary");
+          button.classList.add("btn-primary");
+
+          button.innerHTML = `
+            <i class="bi bi-eye-slash"></i>
+            Watched
+          `;
+        } else {
+          button.classList.remove("btn-primary");
+          button.classList.add("btn-outline-primary");
+
+          button.innerHTML = `
+            <i class="bi bi-eye"></i>
+            Mark as Watched
+          `;
+        }
+
+        return;
+      }
+
       const icon = button.querySelector("i");
       const text = button.querySelector("span");
 
@@ -395,11 +362,12 @@ function initHistoryButtons() {
         icon.classList.add("bi-eye-slash");
 
         text.textContent = "Watched";
+
         const watchlistContainer = document.getElementById(
           "watchlist-container",
         );
 
-        if (watchlistContainer && data.watched) {
+        if (watchlistContainer) {
           const movieId = form.dataset.movie;
 
           document.getElementById(`movie-${movieId}`)?.remove();

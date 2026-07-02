@@ -176,6 +176,28 @@ class MovieDetailView(DetailView):
             context["in_watchlist"] = False
 
         if self.request.user.is_authenticated:
+            in_history = ListItem.objects.filter(
+                movie=self.object,
+                movie_list__user=self.request.user,
+                movie_list__is_history=True,
+            ).exists()
+
+            has_rating = MovieRating.objects.filter(
+                movie=self.object,
+                user=self.request.user,
+            ).exists()
+
+            has_review = Review.objects.filter(
+                movie=self.object,
+                user=self.request.user,
+            ).exists()
+
+            context["in_history"] = in_history or has_rating or has_review
+
+        else:
+            context["in_history"] = False
+
+        if self.request.user.is_authenticated:
             context["lists"] = List.objects.filter(
                 user=self.request.user,
                 is_watchlist=False,
