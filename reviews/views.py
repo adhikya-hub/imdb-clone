@@ -4,7 +4,12 @@ from django.shortcuts import get_object_or_404, redirect
 from django.views import View
 from django.views.generic import ListView
 
-from lists.utils import add_sidebar_previews, add_to_history, annotate_movies
+from lists.utils import (
+    add_sidebar_previews,
+    add_to_history,
+    annotate_movies,
+    sort_movies,
+)
 from movies.models import Movie
 from movies.utils import update_popularity
 
@@ -157,6 +162,18 @@ class UserRatingsView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        sort = self.request.GET.get(
+            "sort",
+            "recent",
+        )
+
+        context["ratings"] = sort_movies(
+            list(context["ratings"]),
+            sort,
+        )
+
+        context["current_sort"] = sort
 
         add_sidebar_previews(
             self.request.user,

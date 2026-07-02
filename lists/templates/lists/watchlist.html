@@ -11,8 +11,60 @@ Your Watchlist
 {% endblock %}
 
 {% block list_content %}
+<div class="d-flex justify-content-end align-items-center gap-2 mb-4">
+
+    <span class="fw-semibold text-light">
+        Sort by
+    </span>
+
+    <form method="get">
+
+        <select
+            name="sort"
+            class="form-select text-primary"
+            style="width:12rem;"
+            onchange="this.form.submit()">
+
+            <option value="recent" {% if current_sort == "recent" %}selected{% endif %}>
+                List order
+            </option>
+
+            <option value="alphabetical" {% if current_sort == "alphabetical" %}selected{% endif %}>
+                Alphabetical
+            </option>
+
+            <option value="imdb_rating" {% if current_sort == "imdb_rating" %}selected{% endif %}>
+                IMDb rating
+            </option>
+
+            <option value="popularity" {% if current_sort == "popularity" %}selected{% endif %}>
+                Popularity
+            </option>
+
+            <option value="ratings" {% if current_sort == "ratings" %}selected{% endif %}>
+                Number of ratings
+            </option>
+
+            <option value="release" {% if current_sort == "release" %}selected{% endif %}>
+                Release date
+            </option>
+
+            <option value="runtime" {% if current_sort == "runtime" %}selected{% endif %}>
+                Runtime
+            </option>
+
+            <option value="your_rating" {% if current_sort == "your_rating" %}selected{% endif %}>
+                Your rating
+            </option>
+
+        </select>
+
+    </form>
+
+</div>
 
 {% if items %}
+
 <div id="watchlist-container">
     {% for item in items %}
 

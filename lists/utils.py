@@ -135,3 +135,57 @@ def add_sidebar_previews(user, context):
 
     if latest_favorite:
         context["favorite_people_preview"] = latest_favorite.person.profile_path
+
+
+def sort_movies(items, sort):
+
+    if sort == "recent":
+        items.sort(
+            key=lambda item: (
+                item.added_at if hasattr(item, "added_at") else item.updated_at
+            ),
+            reverse=True,
+        )
+
+    elif sort == "alphabetical":
+        items.sort(
+            key=lambda item: item.movie.title.lower(),
+        )
+
+    elif sort == "imdb_rating":
+        items.sort(
+            key=lambda item: item.movie.vote_average,
+            reverse=True,
+        )
+
+    elif sort == "popularity":
+        items.sort(
+            key=lambda item: item.movie.popularity,
+            reverse=True,
+        )
+
+    elif sort == "ratings":
+        items.sort(
+            key=lambda item: item.movie.vote_count,
+            reverse=True,
+        )
+
+    elif sort == "release":
+        items.sort(
+            key=lambda item: item.movie.release_date or "",
+            reverse=True,
+        )
+
+    elif sort == "runtime":
+        items.sort(
+            key=lambda item: item.movie.runtime or 0,
+            reverse=True,
+        )
+
+    elif sort == "your_rating":
+        items.sort(
+            key=lambda item: item.movie.user_rating or 0,
+            reverse=True,
+        )
+
+    return items

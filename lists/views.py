@@ -17,6 +17,7 @@ from lists.utils import (
     add_to_history,
     annotate_movies,
     remove_from_history,
+    sort_movies,
 )
 from movies.models import Movie, Person
 from reviews.models import MovieRating, Review
@@ -90,6 +91,18 @@ class WatchlistView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        sort = self.request.GET.get(
+            "sort",
+            "recent",
+        )
+
+        context["items"] = sort_movies(
+            list(context["items"]),
+            sort,
+        )
+
+        context["current_sort"] = sort
+
         add_sidebar_previews(
             self.request.user,
             context,
@@ -149,9 +162,23 @@ class ListDetailView(LoginRequiredMixin, DetailView):
 
         items = list(context["movie_list"].items.select_related("movie"))
 
-        annotate_movies(self.request.user, items)
+        annotate_movies(
+            self.request.user,
+            items,
+        )
 
-        context["items"] = items
+        sort = self.request.GET.get(
+            "sort",
+            "recent",
+        )
+
+        context["items"] = sort_movies(
+            items,
+            sort,
+        )
+
+        context["current_sort"] = sort
+
         add_sidebar_previews(
             self.request.user,
             context,
@@ -268,6 +295,18 @@ class HistoryView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        sort = self.request.GET.get(
+            "sort",
+            "recent",
+        )
+
+        context["items"] = sort_movies(
+            list(context["items"]),
+            sort,
+        )
+
+        context["current_sort"] = sort
 
         add_sidebar_previews(
             self.request.user,
