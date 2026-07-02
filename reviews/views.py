@@ -6,6 +6,7 @@ from django.views.generic import ListView
 
 from lists.utils import add_sidebar_previews, add_to_history, annotate_movies
 from movies.models import Movie
+from movies.utils import update_popularity
 
 from .forms import ReviewForm
 from .models import MovieRating, Review, ReviewVote
@@ -29,6 +30,7 @@ class RateMovieView(LoginRequiredMixin, View):
         add_to_history(request.user, movie)
 
         movie.refresh_rating()
+        update_popularity(movie)
 
         return JsonResponse(
             {
@@ -82,6 +84,7 @@ class ReviewView(LoginRequiredMixin, View):
             review.save()
 
             add_to_history(request.user, movie)
+            update_popularity(movie)
 
         return redirect("movie_detail", pk=pk)
 
