@@ -6,14 +6,20 @@ body {
     --bs-warning: #f5c518;
     --bs-warning-rgb: 245, 197, 24;
 }
+.anton-regular {
+    font-family: "Anton", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    padding: 0.3rem 0.7rem;
+}
 
 .navbar {
     height: 4rem;
 }
 
-.navbar-brand.logo {
+/*.navbar-brand.logo {
     font-size: 1.3rem;
-}
+}*/
 
 .card {
     transition: 0.3s;
@@ -471,4 +477,146 @@ body {
 .title-border {
     border-left: 6px solid #f5c518;
     padding-left: 14px;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .hero-slide {
+        height: 75vh;
+        background-position: center;
+    }
+
+    .hero-overlay .row {
+        justify-content: center;
+        align-items: center !important;
+        text-align: center;
+        height: 100%;
+    }
+
+    .hero-poster {
+        display: none;
+    }
+
+    .hero-overlay h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .hero-overlay .lead {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .hero-overlay .btn {
+        width: 100%;
+        max-width: 260px;
+    }
+
+    .section-heading {
+        margin-bottom: 1rem;
+    }
+
+    .section-heading h2 {
+        font-size: 1.6rem;
+    }
+
+    .movie-card {
+        width: 100%;
+    }
+
+    .movie-poster {
+        width: 100%;
+        height: 260px;
+        object-fit: cover;
+    }
+
+    .movie-title {
+        font-size: 0.95rem;
+    }
+
+    .movie-rating {
+        font-size: 0.9rem;
+    }
+
+    .movie-year {
+        font-size: 0.8rem;
+    }
+
+    .watchlist-icn {
+        font-size: 1.3rem;
+    }
+
+    .person-image {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+    }
+
+    .person-name {
+        font-size: 0.95rem;
+    }
+
+    .person-department {
+        font-size: 0.8rem;
+    }
+
+    .swiper-button-next,
+    .swiper-button-prev {
+        display: none;
+    }
+
+    .navbar-brand.logo {
+        font-size: 1.4rem;
+    }
+
+    .btn-lg {
+        padding: 0.6rem 1.2rem;
+        font-size: 1rem;
+    }
+    .movie-detail-poster {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .movieSwiper .swiper-slide {
+        max-width: 145px;
+    }
+
+    .movie-poster {
+        height: 210px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .movie-title {
+        font-size: 0.85rem;
+    }
+
+    .movie-rating,
+    .movie-year {
+        font-size: 0.75rem;
+    }
+
+    .peopleSwiper .swiper-slide {
+        max-width: 140px;
+    }
+
+    .person-image {
+        height: 180px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .person-name {
+        font-size: 0.85rem;
+    }
+
+    .person-department {
+        font-size: 0.75rem;
+    }
 }

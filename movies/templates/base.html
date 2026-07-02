@@ -6,11 +6,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}IMDb Clone{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
     <link
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
     />
-
 
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
@@ -28,23 +30,26 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-black">
     <div class="container">
 
-        <a class="navbar-brand badge bold text-bg-warning logo" href="/">
+        <a class="navbar-brand badge bold text-bg-warning logo anton-regular" href="/">
             IMDb
         </a>
 
-        <!--<form class="d-flex ms-auto" method="GET" action="">
-            <input
-                class="form-control me-2"
-                type="search"
-                placeholder="Search movies..."
-                name="q"
-            >
+        <div class="ms-auto d-lg-none">
 
-            <button class="btn btn-warning">
-                Search
+            <button
+                class="btn text-light"
+                type="button"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#mobileMenu">
+
+                <i class="bi bi-list fs-2"></i>
+
             </button>
-        </form>-->
-        <form class="d-flex ms-auto w-50" method="GET" action="{% url 'home' %}">
+
+        </div>
+
+
+        <form class="d-none d-lg-flex ms-auto w-50" method="GET" action="{% url 'home' %}">
             <div class="input-group">
                 <input
                     type="search"
@@ -59,7 +64,7 @@
             </div>
         </form>
 
-        <div class="ms-auto d-flex align-items-center">
+        <div class="ms-auto d-none d-lg-flex align-items-center">
 
             {% if user.is_authenticated %}
 
@@ -234,6 +239,122 @@
 
     </div>
 </nav>
+<div
+    class="offcanvas offcanvas-end bg-dark text-light"
+    tabindex="-1"
+    id="mobileMenu">
+
+    <div class="offcanvas-header">
+
+        <h5 class="mb-0">Menu</h5>
+
+        <button
+            type="button"
+            class="btn-close btn-close-white"
+            data-bs-dismiss="offcanvas">
+        </button>
+
+    </div>
+
+    <div class="offcanvas-body">
+
+        <form
+            method="GET"
+            action="{% url 'home' %}"
+            class="mb-4">
+
+            <div class="input-group">
+
+                <input
+                    type="search"
+                    class="form-control"
+                    name="q"
+                    value="{{ search_query }}"
+                    placeholder="Search movies">
+
+                <button
+                    class="btn btn-warning"
+                    type="submit">
+
+                    <i class="bi bi-search"></i>
+
+                </button>
+
+            </div>
+
+        </form>
+
+        {% if user.is_authenticated %}
+
+            <a class="dropdown-item text-light py-2" href="{% url 'profile' %}">
+                Your Profile
+            </a>
+
+            <a class="dropdown-item text-light py-2" href="{% url 'watchlist' %}">
+                Watchlist
+            </a>
+
+            <a class="dropdown-item text-light py-2" href="{% url 'lists' %}">
+                Your Lists
+            </a>
+
+            <a class="dropdown-item text-light py-2" href="{% url 'user_ratings' %}">
+                Ratings
+            </a>
+
+            <a class="dropdown-item text-light py-2" href="{% url 'user_reviews' %}">
+                Reviews
+            </a>
+
+            <a class="dropdown-item text-light py-2" href="{% url 'history' %}">
+                Watch History
+            </a>
+
+            <a class="dropdown-item text-light py-2" href="{% url 'favorite_people' %}">
+                Favorite People
+            </a>
+
+            <hr>
+
+            <form
+                method="post"
+                action="{% url 'logout' %}">
+
+                {% csrf_token %}
+
+                <button
+                    class="btn btn-danger w-100">
+
+                    Logout
+
+                </button>
+
+            </form>
+
+        {% else %}
+
+            <a
+                href="{% url 'login' %}"
+                class="btn btn-outline-warning w-100 mb-2">
+
+                Sign In
+
+            </a>
+
+            <a
+                href="{% url 'signup' %}"
+                class="btn btn-warning w-100">
+
+                Create Account
+
+            </a>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
 {% if messages %}
 
 <div class="container mt-3">
