@@ -13,9 +13,11 @@ from django.views.generic import (
 )
 
 from lists.utils import (
+    add_filter_data,
     add_sidebar_previews,
     add_to_history,
     annotate_movies,
+    filter_movies,
     remove_from_history,
     sort_movies,
 )
@@ -95,9 +97,20 @@ class WatchlistView(LoginRequiredMixin, ListView):
             "sort",
             "recent",
         )
+        items = list(context["items"])
+
+        add_filter_data(
+            self.request,
+            context,
+            items,
+        )
+        items = filter_movies(
+            list(context["items"]),
+            self.request,
+        )
 
         context["items"] = sort_movies(
-            list(context["items"]),
+            items,
             sort,
         )
 
@@ -165,6 +178,11 @@ class ListDetailView(LoginRequiredMixin, DetailView):
         annotate_movies(
             self.request.user,
             items,
+        )
+        add_filter_data(self.request, context, items)
+        items = filter_movies(
+            items,
+            self.request,
         )
 
         sort = self.request.GET.get(
@@ -300,9 +318,20 @@ class HistoryView(LoginRequiredMixin, ListView):
             "sort",
             "recent",
         )
+        items = list(context["items"])
+
+        add_filter_data(
+            self.request,
+            context,
+            items,
+        )
+        items = filter_movies(
+            list(context["items"]),
+            self.request,
+        )
 
         context["items"] = sort_movies(
-            list(context["items"]),
+            items,
             sort,
         )
 

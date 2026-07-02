@@ -11,57 +11,73 @@ Your Watchlist
 {% endblock %}
 
 {% block list_content %}
-<div class="d-flex justify-content-end align-items-center gap-2 mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4">
 
-    <span class="fw-semibold text-light">
-        Sort by
-    </span>
+    <button
+        class="btn btn-outline-secondary"
+        data-bs-toggle="modal"
+        data-bs-target="#filterModal">
 
-    <form method="get">
+        <i class="bi bi-funnel me-2"></i>
 
-        <select
-            name="sort"
-            class="form-select text-primary"
-            style="width:12rem;"
-            onchange="this.form.submit()">
+        Filter
 
-            <option value="recent" {% if current_sort == "recent" %}selected{% endif %}>
-                List order
-            </option>
+    </button>
 
-            <option value="alphabetical" {% if current_sort == "alphabetical" %}selected{% endif %}>
-                Alphabetical
-            </option>
+    <div class="d-flex align-items-center gap-2">
 
-            <option value="imdb_rating" {% if current_sort == "imdb_rating" %}selected{% endif %}>
-                IMDb rating
-            </option>
+        <span class="fw-semibold text-secondary">
+            Sort by
+        </span>
 
-            <option value="popularity" {% if current_sort == "popularity" %}selected{% endif %}>
-                Popularity
-            </option>
+        <form method="get">
 
-            <option value="ratings" {% if current_sort == "ratings" %}selected{% endif %}>
-                Number of ratings
-            </option>
+            <select
+                name="sort"
+                class="form-select"
+                style="width:12rem;"
+                onchange="this.form.submit()">
 
-            <option value="release" {% if current_sort == "release" %}selected{% endif %}>
-                Release date
-            </option>
+                <option value="recent" {% if current_sort == "recent" %}selected{% endif %}>
+                    List order
+                </option>
 
-            <option value="runtime" {% if current_sort == "runtime" %}selected{% endif %}>
-                Runtime
-            </option>
+                <option value="alphabetical" {% if current_sort == "alphabetical" %}selected{% endif %}>
+                    Alphabetical
+                </option>
 
-            <option value="your_rating" {% if current_sort == "your_rating" %}selected{% endif %}>
-                Your rating
-            </option>
+                <option value="imdb_rating" {% if current_sort == "imdb_rating" %}selected{% endif %}>
+                    IMDb rating
+                </option>
 
-        </select>
+                <option value="popularity" {% if current_sort == "popularity" %}selected{% endif %}>
+                    Popularity
+                </option>
 
-    </form>
+                <option value="ratings" {% if current_sort == "ratings" %}selected{% endif %}>
+                    Number of ratings
+                </option>
+
+                <option value="release" {% if current_sort == "release" %}selected{% endif %}>
+                    Release date
+                </option>
+
+                <option value="runtime" {% if current_sort == "runtime" %}selected{% endif %}>
+                    Runtime
+                </option>
+
+                <option value="your_rating" {% if current_sort == "your_rating" %}selected{% endif %}>
+                    Your rating
+                </option>
+
+            </select>
+
+        </form>
+
+    </div>
 
 </div>
+
 
 {% if items %}
 
@@ -77,5 +93,5 @@ Your Watchlist
     {% include "components/empty_state.html" %}
 
 {% endif %}
-
+{% include "components/filter_modal.html" %}
 {% endblock %}

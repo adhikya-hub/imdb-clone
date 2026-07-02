@@ -5,9 +5,11 @@ from django.views import View
 from django.views.generic import ListView
 
 from lists.utils import (
+    add_filter_data,
     add_sidebar_previews,
     add_to_history,
     annotate_movies,
+    filter_movies,
     sort_movies,
 )
 from movies.models import Movie
@@ -167,9 +169,20 @@ class UserRatingsView(LoginRequiredMixin, ListView):
             "sort",
             "recent",
         )
+        items = list(context["ratings"])
+
+        add_filter_data(
+            self.request,
+            context,
+            items,
+        )
+        ratings = filter_movies(
+            list(context["ratings"]),
+            self.request,
+        )
 
         context["ratings"] = sort_movies(
-            list(context["ratings"]),
+            ratings,
             sort,
         )
 

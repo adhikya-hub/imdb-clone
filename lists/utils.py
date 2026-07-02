@@ -1,4 +1,7 @@
+from collections import Counter
+
 from lists.models import FavoritePerson, List, ListItem
+from movies.models import Genre
 from reviews.models import MovieRating, Review
 
 
@@ -189,3 +192,86 @@ def sort_movies(items, sort):
         )
 
     return items
+
+
+def add_filter_data(request, context, items):
+
+    counter = Counter()
+
+    for item in items:
+        for genre in item.movie.genres.all():
+            counter[genre] += 1
+
+    context["genres"] = sorted(
+        counter.items(),
+        key=lambda genre: genre[0].name,
+    )
+
+    context["selected_genres"] = request.GET.getlist("genre")
+
+    context["year_from"] = request.GET.get("year_from", "")
+    context["year_to"] = request.GET.get("year_to", "")
+
+    context["imdb_from"] = request.GET.get("imdb_from", "")
+    context["imdb_to"] = request.GET.get("imdb_to", "")
+
+    context["user_from"] = request.GET.get("user_from", "")
+    context["user_to"] = request.GET.get("user_to", "")
+
+    return context
+
+
+def filter_movies(items, request):
+
+    genre_ids = request.GET.getlist("genre")
+
+    year_from = request.GET.get("year_from")
+
+    year_to = request.GET.get("year_to")
+
+    imdb_from = request.GET.get("imdb_from")
+
+    imdb_to = request.GET.get("imdb_to")
+
+    user_from = request.GET.get("user_from")
+
+    user_to = request.GET.get("user_to")
+
+    filtered = []
+
+    for item in items:
+        movie = item.movie
+
+        if genre_ids:
+            movie_genres = {str(genre.id) for genre in movie.genres.all()}
+
+            if not movie_genres.intersection(genre_ids):
+                continue
+
+        if year_from:
+            if not movie.release_date or movie.release_date.year < int(year_from):
+                continue
+
+        if year_to:
+            if not movie.release_date or movie.release_date.year > int(year_to):
+                continue
+
+        if imdb_from:
+            if movie.vote_average < float(imdb_from):
+                continue
+
+        if imdb_to:
+            if movie.vote_average > float(imdb_to):
+                continue
+
+        if user_from:
+            if movie.user_rating is None or movie.user_rating < int(user_from):
+                continue
+
+        if user_to:
+            if movie.user_rating is None or movie.user_rating > int(user_to):
+                continue
+
+        filtered.append(item)
+
+    return filtered
