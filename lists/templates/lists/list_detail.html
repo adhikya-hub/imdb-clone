@@ -1,192 +1,29 @@
-{% extends "base.html" %}
+{% extends "lists/list_base.html" %}
 
 {% block title %}
 {{ movie_list.name }}
 {% endblock %}
 
-{% block content %}
+{% block hero %}
 
-<div class="d-flex justify-content-between align-items-center mb-5">
+{% include "components/hero.html" with page_title=movie_list.name page_description=movie_list.description item_count=movie_list.items.count item_label="Titles" %}
 
-    <div>
+{% endblock %}
 
-        <h1 class="mb-2">
-
-            {{ movie_list.name }}
-
-        </h1>
-
-        {% if movie_list.description %}
-
-        <p class="text-secondary">
-
-            {{ movie_list.description }}
-
-        </p>
-
-        {% endif %}
-
-        <small class="text-secondary">
-
-            {{ movie_list.items.count }}
-            movie{{ movie_list.items.count|pluralize }}
-
-        </small>
-
-    </div>
-
-    <a
-        href="{% url 'lists' %}"
-        class="btn btn-outline-secondary">
-
-        ← Back to Lists
-
-    </a>
-
-</div>
+{% block list_content %}
 
 {% if movie_list.items.all %}
 
-<div class="list-group shadow">
+    {% for item in movie_list.items.all %}
 
-{% for item in movie_list.items.all %}
+        {% include "components/movie_row.html" with movie=item.movie movie_list=movie_list show_list_actions=True %}
 
-<div class="list-group-item py-4">
-
-    <div class="row align-items-center">
-
-        <div class="col-md-2">
-
-            <a href="{% url 'movie_detail' item.movie.id %}">
-
-                <img
-                    src="{{ item.movie.poster_path }}"
-                    class="img-fluid rounded shadow"
-                    alt="{{ item.movie.title }}">
-
-            </a>
-
-        </div>
-
-        <div class="col-md-8">
-
-            <h3>
-
-                <a
-                    href="{% url 'movie_detail' item.movie.id %}"
-                    class="text-decoration-none">
-
-                    {{ forloop.counter }}.
-                    {{ item.movie.title }}
-
-                </a>
-
-            </h3>
-
-            <p class="text-secondary">
-
-                {{ item.movie.release_date|date:"Y" }}
-
-                •
-
-                {{ item.movie.runtime }} min
-
-                •
-
-                {{ item.movie.original_language|upper }}
-
-            </p>
-
-            <h5 class="text-warning">
-
-                ★ {{ item.movie.vote_average|floatformat:1 }}
-
-                <small class="text-secondary">
-
-                    ({{ item.movie.vote_count }} votes)
-
-                </small>
-
-            </h5>
-
-            <p class="mt-3">
-
-                {{ item.movie.overview|truncatewords:35 }}
-
-            </p>
-
-        </div>
-
-        <div class="col-md-2 text-end">
-
-            <form
-                method="post"
-                action="{% url 'remove_list_item' movie_list.id item.movie.id %}">
-
-                {% csrf_token %}
-
-                <button
-                    class="btn btn-outline-danger">
-
-                    <i class="bi bi-bookmark-fill"></i>
-
-                    Remove
-
-                </button>
-
-            </form>
-
-        </div>
-
-    </div>
-
-</div>
-
-{% endfor %}
-
-</div>
+    {% endfor %}
 
 {% else %}
 
-<div class="text-center py-5">
-
-    <i class="bi bi-film display-1 text-warning"></i>
-
-    <h3 class="mt-3">
-
-        This list is empty
-
-    </h3>
-
-    <a
-        href="{% url 'home' %}"
-        class="btn btn-warning mt-3">
-
-        Browse Movies
-
-    </a>
-
-</div>
+    {% include "components/empty_state.html" %}
 
 {% endif %}
-<div class="mb-4">
-
-    <a
-        href="{% url 'edit_list' movie_list.id %}"
-        class="btn btn-warning">
-
-        Edit List
-
-    </a>
-
-    <a
-        href="{% url 'delete_list' movie_list.id %}"
-        class="btn btn-danger">
-
-        Delete
-
-    </a>
-
-</div>
 
 {% endblock %}

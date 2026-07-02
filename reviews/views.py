@@ -102,23 +102,6 @@ class DeleteReviewView(LoginRequiredMixin, View):
         return redirect("movie_detail", pk=pk)
 
 
-# class VoteReviewView(LoginRequiredMixin, View):
-#     def post(self, request, pk):
-
-#         review = get_object_or_404(Review, pk=pk)
-
-#         value = int(request.POST["value"])
-
-#         ReviewVote.objects.update_or_create(
-#             review=review,
-#             user=request.user,
-#             defaults={
-#                 "value": value,
-#             },
-#         )
-
-
-#         return redirect("movie_detail", pk=review.movie.pk)
 class VoteReviewView(LoginRequiredMixin, View):
     def post(self, request, pk):
 
@@ -158,6 +141,16 @@ class UserRatingsView(LoginRequiredMixin, ListView):
             .select_related("movie")
             .order_by("-updated_at")
         )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["preview_image"] = None
+
+        if context["ratings"]:
+            context["preview_image"] = context["ratings"][0].movie.poster_path
+
+        return context
 
 
 class UserReviewsView(LoginRequiredMixin, ListView):

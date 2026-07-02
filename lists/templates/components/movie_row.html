@@ -1,0 +1,213 @@
+<div
+    class="card shadow-sm border-0 mb-3"
+    id="movie-{{ movie.id }}">
+
+    <div class="row g-0">
+
+        <div class="col-auto position-relative">
+
+            <a href="{% url 'movie_detail' movie.id %}">
+
+                <img
+                    src="{{ movie.poster_path }}"
+                    class="rounded-start"
+                    style="width:110px;height:165px;object-fit:cover;"
+                    alt="{{ movie.title }}">
+
+            </a>
+
+            <form
+                method="post"
+                action="{% url 'toggle_watchlist' movie.id %}"
+                class="watchlist-form position-absolute top-0 start-0"
+                data-movie="{{ movie.id }}">
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="btn p-0 border-0 bg-transparent">
+
+                    {% if movie.in_watchlist %}
+
+                        <i class="bi bi-bookmark-fill text-warning fs-2"></i>
+
+                    {% else %}
+
+                        <i class="bi bi-bookmark text-dark fs-2"></i>
+
+                    {% endif %}
+
+                </button>
+
+            </form>
+
+        </div>
+
+        <div class="col">
+
+            <div class="card-body d-flex flex-column h-100">
+
+                <h5 class="fw-bold mb-2">
+
+                    <a
+                        href="{% url 'movie_detail' movie.id %}"
+                        class="text-decoration-none text-dark">
+
+                        {{ movie.title }}
+
+                    </a>
+
+                </h5>
+
+                <div class="text-secondary small mb-2">
+
+                    {{ movie.release_date|date:"Y" }}
+
+                    •
+
+                    {{ movie.runtime }} min
+
+                    •
+
+                    {{ movie.original_language|upper }}
+
+                </div>
+
+                <div class="d-flex align-items-center gap-4 mb-3">
+
+                    <div>
+
+                        <i class="bi bi-star-fill text-warning"></i>
+
+                        {{ movie.vote_average|floatformat:1 }}
+
+                        <small class="text-secondary">
+
+                            ({{ movie.vote_count }})
+
+                        </small>
+
+                    </div>
+
+                    <a href="{% url 'movie_detail' movie.pk %}"
+                       class="btn btn-link p-0 text-decoration-none">
+
+                        {% if movie.user_rating %}
+                            <i class="bi bi-star-fill text-primary"></i>
+                            {{ movie.user_rating }}/10
+                        {% else %}
+                            <i class="bi bi-star text-primary"></i>
+                            Rate
+                        {% endif %}
+                    </a>
+
+                </div>
+
+                <div class="d-flex align-items-center gap-4 mt-auto">
+
+                    <form
+                        method="post"
+                        action="{% url 'toggle_history' movie.id %}"
+                        class="history-form"
+                        data-movie="{{ movie.id }}">
+
+                        {% csrf_token %}
+
+                        <button
+                            class="btn btn-link p-0 text-decoration-none">
+
+                            {% if movie.in_history %}
+
+                                <i class="bi bi-eye-slash text-primary"></i>
+
+                                <span class="text-primary">
+
+                                    Watched
+
+                                </span>
+
+                            {% else %}
+
+                                <i class="bi bi-eye text-primary"></i>
+
+                                <span class="text-primary">
+
+                                    Mark as watched
+
+                                </span>
+
+                            {% endif %}
+
+                        </button>
+
+                    </form>
+
+                    <!--{% if show_watchlist_actions %}
+
+                        <form
+                            method="post"
+                            action="{% url 'toggle_watchlist' movie.id %}"
+                            class="watchlist-form"
+                            data-movie="{{ movie.id }}">
+
+                            {% csrf_token %}
+
+                            <button
+                                class="btn btn-link p-0 text-decoration-none text-primary">
+
+                                Remove
+
+                            </button>
+
+                        </form>
+
+                    {% endif %}-->
+
+                    <!--{% if show_history_actions %}
+
+                        <form
+                            method="post"
+                            action="{% url 'remove_history' movie.id %}">
+
+                            {% csrf_token %}
+
+                            <button
+                                class="btn btn-link p-0 text-decoration-none text-primary">
+
+                                Remove
+
+                            </button>
+
+                        </form>
+
+                    {% endif %}-->
+
+                    {% if show_list_actions %}
+
+                        <form
+                            method="post"
+                            action="{% url 'remove_list_item' movie_list.id movie.id %}">
+
+                            {% csrf_token %}
+
+                            <button
+                                class="btn btn-link p-0 text-decoration-none text-primary">
+
+                                Remove
+
+                            </button>
+
+                        </form>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

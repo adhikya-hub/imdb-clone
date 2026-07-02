@@ -1,124 +1,29 @@
-{% extends "base.html" %}
+{% extends "lists/list_base.html" %}
 
 {% block title %}
 Favorite People
 {% endblock %}
 
-{% block content %}
+{% block hero %}
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+{% include "components/hero.html" with page_title="Favorite People" page_description="People you've added to your favorites." item_count=favorites|length item_label="People" %}
 
-    <div>
+{% endblock %}
 
-        <h2>Your Favorite People</h2>
+{% block list_content %}
 
-        <p class="text-secondary mb-0">
-            {{ favorites|length }} People
-        </p>
-
-    </div>
-
-</div>
-
-<div class="row">
+{% if favorites %}
 
     {% for favorite in favorites %}
 
-    <div
-        class="col-md-3 mb-4"
-        id="favorite-{{ favorite.person.id }}">
-
-        <div class="card h-100 shadow">
-
-            <a
-                href="{% url 'person_detail' favorite.person.id %}"
-                class="text-decoration-none text-dark">
-
-                <img
-                    src="{{ favorite.person.profile_path }}"
-                    class="card-img-top"
-                    alt="{{ favorite.person.name }}"
-                    style="height:340px; object-fit:cover;">
-
-            </a>
-
-            <div class="card-body d-flex flex-column">
-
-                <a
-                    href="{% url 'person_detail' favorite.person.id %}"
-                    class="text-decoration-none text-dark">
-
-                    <h5 class="card-title">
-
-                        {{ favorite.person.name }}
-
-                    </h5>
-
-                    <p class="text-muted mb-2">
-
-                        {{ favorite.person.known_for_department }}
-
-                    </p>
-
-                    <small class="text-secondary d-block mb-3">
-
-                        Added {{ favorite.created_at|date:"M d, Y" }}
-
-                    </small>
-
-                </a>
-
-                <form
-                    method="post"
-                    action="{% url 'toggle_favorite_person' favorite.person.id %}"
-                    class="favorite-form mt-auto"
-                    data-person="{{ favorite.person.id }}">
-
-                    {% csrf_token %}
-
-                    <button
-                        type="submit"
-                        class="btn btn-outline-dark w-100">
-
-                        <i class="bi bi-heart-fill"></i>
-
-                        Remove from Favorites
-
-                    </button>
-
-                </form>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    {% empty %}
-
-    <div class="text-center py-5">
-
-        <i
-            class="bi bi-heart"
-            style="font-size:4rem;">
-        </i>
-
-        <h4 class="mt-3">
-
-            No Favorite People Yet
-
-        </h4>
-
-        <p class="text-secondary">
-
-            Start adding your favorite actors, directors and other people.
-
-        </p>
-
-    </div>
+        {% include "components/person_row.html" with person=favorite.person favorite=favorite %}
 
     {% endfor %}
 
-</div>
+{% else %}
+
+    {% include "components/empty_state.html" %}
+
+{% endif %}
 
 {% endblock %}

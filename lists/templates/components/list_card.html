@@ -1,0 +1,31 @@
+<div class="card shadow-sm h-100">
+
+    <div class="card-body">
+
+        <h4>
+
+            <a
+                href="{% url 'list_detail' list.id %}"
+                class="text-decoration-none text-dark">
+
+                {{ list.name }}
+
+            </a>
+
+        </h4>
+
+        <p class="text-secondary">
+
+            {{ list.description }}
+
+        </p>
+
+        <small>
+
+            {{ list.items.count }} movies
+
+        </small>
+
+    </div>
+
+</div>

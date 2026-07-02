@@ -12,7 +12,7 @@ from django.views.generic import (
     UpdateView,
 )
 
-from lists.utils import add_to_history
+from lists.utils import add_to_history, annotate_movies, remove_from_history
 from movies.models import Movie, Person
 from reviews.models import MovieRating, Review
 
@@ -76,7 +76,21 @@ class WatchlistView(LoginRequiredMixin, ListView):
             },
         )
 
-        return watchlist.items.select_related("movie").order_by("-added_at")
+        items = list(watchlist.items.select_related("movie").order_by("-added_at"))
+
+        annotate_movies(self.request.user, items)
+
+        return items
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["preview_image"] = None
+
+        if context["items"]:
+            context["preview_image"] = context["items"][0].movie.poster_path
+
+        return context
 
 
 class UserListsView(LoginRequiredMixin, ListView):
@@ -104,6 +118,9 @@ class UserListsView(LoginRequiredMixin, ListView):
         else:
             context["watchlist_count"] = 0
 
+        context["page_title"] = "Your Lists"
+        context["page_description"] = "Lists you've created."
+
         return context
 
 
@@ -116,6 +133,17 @@ class ListDetailView(LoginRequiredMixin, DetailView):
         return List.objects.filter(user=self.request.user).prefetch_related(
             "items__movie"
         )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        items = list(context["movie_list"].items.select_related("movie"))
+
+        annotate_movies(self.request.user, items)
+
+        context["items"] = items
+
+        return context
 
 
 class RemoveListItemView(LoginRequiredMixin, View):
@@ -161,31 +189,6 @@ class DeleteListView(LoginRequiredMixin, DeleteView):
 
     def get_queryset(self):
         return List.objects.filter(user=self.request.user)
-
-
-# class UpdateMovieListsView(LoginRequiredMixin, View):
-#     def post(self, request, pk):
-
-#         movie = get_object_or_404(Movie, pk=pk)
-
-#         selected_lists = request.POST.getlist("lists")
-
-#         user_lists = List.objects.filter(user=request.user)
-
-#         for movie_list in user_lists:
-#             if str(movie_list.id) in selected_lists:
-#                 ListItem.objects.get_or_create(
-#                     movie_list=movie_list,
-#                     movie=movie,
-#                 )
-
-#             else:
-#                 ListItem.objects.filter(
-#                     movie_list=movie_list,
-#                     movie=movie,
-#                 ).delete()
-
-#         return redirect("movie_detail", pk=pk)
 
 
 class UpdateMovieListsView(LoginRequiredMixin, View):
@@ -243,7 +246,21 @@ class HistoryView(LoginRequiredMixin, ListView):
             },
         )
 
-        return history.items.select_related("movie").order_by("-added_at")
+        items = list(history.items.select_related("movie").order_by("-added_at"))
+
+        annotate_movies(self.request.user, items)
+
+        return items
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["preview_image"] = None
+
+        if context["items"]:
+            context["preview_image"] = context["items"][0].movie.poster_path
+
+        return context
 
 
 class ToggleHistoryView(LoginRequiredMixin, View):
@@ -251,43 +268,53 @@ class ToggleHistoryView(LoginRequiredMixin, View):
 
         movie = get_object_or_404(Movie, pk=pk)
 
-        history, created = List.objects.get_or_create(
+        history = List.objects.filter(
             user=request.user,
             is_history=True,
-            defaults={
-                "name": "Watch History",
-                "description": "",
-                "is_public": False,
-            },
-        )
-
-        item = ListItem.objects.filter(
-            movie_list=history,
-            movie=movie,
         ).first()
 
-        if item:
-            item.delete()
-        else:
-            ListItem.objects.create(
+        in_history = (
+            history
+            and ListItem.objects.filter(
                 movie_list=history,
                 movie=movie,
+            ).exists()
+        )
+
+        has_rating = MovieRating.objects.filter(
+            user=request.user,
+            movie=movie,
+        ).exists()
+
+        has_review = Review.objects.filter(
+            user=request.user,
+            movie=movie,
+        ).exists()
+
+        if in_history:
+            if has_rating or has_review:
+                return JsonResponse(
+                    {
+                        "watched": True,
+                        "message": "To remove this from your watch history, remove your rating or review first.",
+                    }
+                )
+
+            remove_from_history(request.user, movie)
+
+            return JsonResponse(
+                {
+                    "watched": False,
+                }
             )
-
-            watchlist = List.objects.filter(
-                user=request.user,
-                is_watchlist=True,
-            ).first()
-
-            if watchlist:
-                ListItem.objects.filter(
-                    movie_list=watchlist,
-                    movie=movie,
-                ).delete()
 
         add_to_history(request.user, movie)
 
-        return redirect(request.META.get("HTTP_REFERER", "/"))
+        return JsonResponse(
+            {
+                "watched": True,
+            }
+        )
 
 
 class RemoveHistoryView(LoginRequiredMixin, View):
@@ -366,3 +393,13 @@ class FavoritePeopleView(LoginRequiredMixin, ListView):
             .select_related("person")
             .order_by("-created_at")
         )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["preview_image"] = None
+
+        if context["favorites"]:
+            context["preview_image"] = context["favorites"][0].person.profile_path
+
+        return context

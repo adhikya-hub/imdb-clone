@@ -1,3 +1,11 @@
+function showToast(message) {
+  document.getElementById("toast-message").textContent = message;
+
+  bootstrap.Toast.getOrCreateInstance(
+    document.getElementById("app-toast"),
+  ).show();
+}
+
 function initFavoriteButtons() {
   document.querySelectorAll(".favorite-form").forEach((form) => {
     form.addEventListener("submit", async function (e) {
@@ -359,6 +367,60 @@ function initMovieListsForm() {
     ).hide();
   });
 }
+function initHistoryButtons() {
+  document.querySelectorAll(".history-form").forEach((form) => {
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const response = await fetch(form.action, {
+        method: "POST",
+        body: new FormData(form),
+      });
+
+      if (!response.ok) return;
+
+      const data = await response.json();
+
+      if (data.message) {
+        showToast(data.message);
+        return;
+      }
+
+      const button = form.querySelector("button");
+      const icon = button.querySelector("i");
+      const text = button.querySelector("span");
+
+      if (data.watched) {
+        icon.classList.remove("bi-eye");
+        icon.classList.add("bi-eye-slash");
+
+        text.textContent = "Watched";
+        const watchlistContainer = document.getElementById(
+          "watchlist-container",
+        );
+
+        if (watchlistContainer && data.watched) {
+          const movieId = form.dataset.movie;
+
+          document.getElementById(`movie-${movieId}`)?.remove();
+
+          if (!watchlistContainer.querySelector("[id^='movie-']")) {
+            watchlistContainer.classList.add("d-none");
+
+            document
+              .getElementById("empty-watchlist")
+              ?.classList.remove("d-none");
+          }
+        }
+      } else {
+        icon.classList.remove("bi-eye-slash");
+        icon.classList.add("bi-eye");
+
+        text.textContent = "Mark as watched";
+      }
+    });
+  });
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   initFavoriteButtons();
@@ -367,4 +429,5 @@ document.addEventListener("DOMContentLoaded", () => {
   initRemoveRatingButton();
   initReviewVoteButtons();
   initMovieListsForm();
+  initHistoryButtons();
 });
