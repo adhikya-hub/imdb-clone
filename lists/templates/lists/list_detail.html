@@ -12,15 +12,15 @@
 
 {% block list_content %}
 
-{% if movie_list.items.all %}
+    {% if items %}
 
-    {% for item in movie_list.items.all %}
+        {% for item in items %}
 
-        {% include "components/movie_row.html" with movie=item.movie movie_list=movie_list show_list_actions=True %}
+            {% include "components/movie_row.html" with movie=item.movie movie_list=movie_list show_list_actions=True %}
 
-    {% endfor %}
+        {% endfor %}
 
-{% else %}
+    {% else %}
 
     {% include "components/empty_state.html" %}
 
