@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 from pathlib import Path
 
+import cloudinary
+import cloudinary_storage
 import dj_database_url
 from dotenv import load_dotenv
 
@@ -67,7 +69,6 @@ INSTALLED_APPS = [
     "reviews",
     "lists",
     # "django_elasticsearch_dsl",
-    "cloudinary_storage",
     "cloudinary",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -173,6 +174,12 @@ CLOUDINARY_STORAGE = {
     "API_SECRET": os.getenv("CLOUDINARY_API_SECRET"),
 }
 
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
+    secure=True,
+)
 STORAGES = {
     "default": {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
