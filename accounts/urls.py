@@ -1,7 +1,13 @@
 from django.contrib.auth import views as auth_views
 from django.urls import path
 
-from .views import LoginLandingView, ProfileView, SignInView, SignUpView
+from .views import (
+    EditProfileView,
+    LoginLandingView,
+    ProfileView,
+    SignInView,
+    SignUpView,
+)
 
 urlpatterns = [
     path("login/", LoginLandingView.as_view(), name="login"),
@@ -24,5 +30,10 @@ urlpatterns = [
         "profile/",
         ProfileView.as_view(),
         name="profile",
+    ),
+    path(
+        "profile/edit/",
+        EditProfileView.as_view(),
+        name="edit_profile",
     ),
 ]

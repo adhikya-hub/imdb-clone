@@ -416,7 +416,7 @@ function initCeleryDownloads() {
 
           resultDiv.innerHTML = `
                       <a
-                          class="btn btn-success"
+                          class="btn btn-warning"
                           href="/media/${result.file}"
                           download>
 

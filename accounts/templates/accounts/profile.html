@@ -12,14 +12,26 @@ Profile
 
         <div class="row align-items-center">
 
+
+            {% if user.profile_picture %}
             <div class="col-md-2 text-center">
-
-                <i
-                    class="bi bi-person-circle text-white"
-                    style="font-size:7rem;">
-                </i>
-
+                <img
+                    src="{{ user.profile_picture.url }}"
+                    class="rounded-circle border border-warning"
+                    style="width:180px;height:180px;object-fit:cover;">
             </div>
+            {% else %}
+
+                    <div class="col-md-2 text-center">
+
+                        <i
+                            class="bi bi-person-circle text-primary"
+                            style="font-size:9.5rem;">
+                        </i>
+
+                    </div>
+
+            {% endif %}
 
             <div class="col-md-6">
 
@@ -31,9 +43,18 @@ Profile
 
                 <p class="text-secondary">
 
-                    Member since {{ user.date_joined|date:"M Y" }}
+                    Joined {{ user.date_joined|date:"M Y" }}
 
                 </p>
+                <a
+                    href="{% url 'edit_profile' %}"
+                    class="btn text-light btn-primary rounded-pill">
+
+
+
+                    Edit Profile
+
+                </a>
 
             </div>
 

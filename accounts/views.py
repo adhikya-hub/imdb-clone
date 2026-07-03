@@ -2,12 +2,13 @@ from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, TemplateView
+from django.views.generic import CreateView, TemplateView, UpdateView
 
 from lists.models import FavoritePerson, List
 from reviews.models import MovieRating, Review
 
-from .forms import SignUpForm
+from .forms import ProfileForm, SignUpForm
+from .models import User
 
 
 class LoginLandingView(TemplateView):
@@ -98,3 +99,13 @@ class ProfileView(LoginRequiredMixin, TemplateView):
         ).count()
 
         return context
+
+
+class EditProfileView(LoginRequiredMixin, UpdateView):
+    model = User
+    form_class = ProfileForm
+    template_name = "accounts/edit_profile.html"
+    success_url = reverse_lazy("profile")
+
+    def get_object(self):
+        return self.request.user
