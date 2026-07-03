@@ -1,3 +1,4 @@
+from celery.result import AsyncResult
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
@@ -26,6 +27,7 @@ from reviews.models import MovieRating, Review
 
 from .forms import ListForm
 from .models import FavoritePerson, List, ListItem
+from .tasks import export_list_csv
 
 
 class ToggleWatchlistView(LoginRequiredMixin, View):
@@ -485,3 +487,42 @@ class FavoritePeopleView(LoginRequiredMixin, ListView):
         )
 
         return context
+
+
+class ExportListView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+
+        movie_list = get_object_or_404(
+            List,
+            pk=pk,
+            user=request.user,
+        )
+
+        task = export_list_csv.delay(movie_list.id)
+
+        return JsonResponse(
+            {
+                "success": True,
+                "task_id": task.id,
+            }
+        )
+
+
+class ExportStatusView(LoginRequiredMixin, View):
+    def get(self, request, task_id):
+
+        result = AsyncResult(task_id)
+
+        if result.ready():
+            return JsonResponse(
+                {
+                    "ready": True,
+                    "file": result.result,
+                }
+            )
+
+        return JsonResponse(
+            {
+                "ready": False,
+            }
+        )

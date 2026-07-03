@@ -1,7 +1,6 @@
 from collections import Counter
 
 from lists.models import FavoritePerson, List, ListItem
-from movies.models import Genre
 from reviews.models import MovieRating, Review
 
 

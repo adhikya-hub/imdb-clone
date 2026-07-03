@@ -3,6 +3,8 @@ from django.urls import path
 from .views import (
     CreateListView,
     DeleteListView,
+    ExportListView,
+    ExportStatusView,
     FavoritePeopleView,
     HistoryView,
     ListDetailView,
@@ -92,5 +94,15 @@ urlpatterns = [
         "people/<int:pk>/favorite/",
         ToggleFavoritePersonView.as_view(),
         name="toggle_favorite_person",
+    ),
+    path(
+        "<int:pk>/export/",
+        ExportListView.as_view(),
+        name="export_list",
+    ),
+    path(
+        "export/<str:task_id>/",
+        ExportStatusView.as_view(),
+        name="export_status",
     ),
 ]

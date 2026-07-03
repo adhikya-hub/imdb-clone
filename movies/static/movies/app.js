@@ -390,6 +390,46 @@ function initHistoryButtons() {
   });
 }
 
+function initCeleryDownloads() {
+  document.querySelectorAll(".export-form").forEach((form) => {
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const response = await fetch(form.action, {
+        method: "POST",
+        body: new FormData(form),
+      });
+
+      const data = await response.json();
+
+      const resultDiv = document.getElementById("export-result");
+
+      resultDiv.innerHTML = "Preparing your CSV...";
+
+      const interval = setInterval(async () => {
+        const status = await fetch(`/lists/export/${data.task_id}/`);
+
+        const result = await status.json();
+
+        if (result.ready) {
+          clearInterval(interval);
+
+          resultDiv.innerHTML = `
+                      <a
+                          class="btn btn-success"
+                          href="/media/${result.file}"
+                          download>
+
+                          Download CSV
+
+                      </a>
+                  `;
+        }
+      }, 1000);
+    });
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   initFavoriteButtons();
   initWatchlistButtons();
@@ -398,4 +438,5 @@ document.addEventListener("DOMContentLoaded", () => {
   initReviewVoteButtons();
   initMovieListsForm();
   initHistoryButtons();
+  initCeleryDownloads();
 });

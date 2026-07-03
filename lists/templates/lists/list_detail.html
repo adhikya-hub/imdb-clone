@@ -23,6 +23,27 @@
         Filter
 
     </button>
+    <form
+        method="post"
+        action="{% url 'export_list' movie_list.id %}"
+        class="export-form">
+
+        {% csrf_token %}
+
+        <button
+            class="btn btn-outline-success">
+
+            <i class="bi bi-download"></i>
+
+            Export CSV
+
+        </button>
+
+    </form>
+    <div
+        id="export-result"
+        data-status-url="{% url 'export_status' 'TASK_ID' %}">
+    </div>
 
     <div class="d-flex align-items-center gap-2">
 
