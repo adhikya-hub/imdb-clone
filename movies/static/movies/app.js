@@ -240,6 +240,7 @@ function initRemoveRatingButton() {
     document.getElementById("current-rating").innerHTML = "";
 
     bootstrap.Modal.getInstance(document.getElementById("ratingModal")).hide();
+    location.reload();
   });
 }
 
