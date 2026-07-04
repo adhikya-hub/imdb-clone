@@ -191,6 +191,7 @@ function initRatingButtons() {
     button.disabled = true;
 
     bootstrap.Modal.getInstance(document.getElementById("ratingModal")).hide();
+    location.reload();
   });
 
   document
